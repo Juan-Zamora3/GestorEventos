@@ -47,6 +47,7 @@ function App() {
       <Route path="/admin-eventos" element={<LayoutAdminEventos />}>
         <Route index element={<Navigate to="lista" replace />} />
         <Route path="lista" element={<PaginaListaEventosAdminEventos />} />
+
         <Route path="crear" element={<PaginaCrearEventoAdminEventos />} />
         <Route path="plantillas" element={<PaginaGaleriaPlantillasAdminEventos />} />
       </Route>
@@ -57,7 +58,8 @@ function App() {
         <Route index element={<Navigate to="eventos" replace />} />
         <Route path="eventos" element={<PaginaListaEventosAdminAsistencias />} />
         <Route path="eventos/:id" element={<PaginaDetalleEventoAdminAsistencias />} />
-=======
+
+
         <Route path="crear" element={<PaginaCrearEventoAdminEventos />}>
           <Route index element={<Navigate to="informacion" replace />} />
           <Route path="informacion" element={<SeccionInformacionEvento />} />
