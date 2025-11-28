@@ -4,18 +4,22 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import PaginaInicioSesion from "./modulos/autenticacion/paginas/PaginaInicioSesion";
 
-/* ========== ADMIN GENERAL (exports nombrados) ========== */
+/* ========== ADMIN GENERAL ========== */
 import { LayoutAdminGeneral } from "./modulos/administradorGeneral/paginas/LayoutAdminGeneral";
 import { PaginaAuditoriaAdminGeneral } from "./modulos/administradorGeneral/paginas/PaginaAuditoriaAdminGeneral";
 import { PaginaUsuariosAdminGeneral } from "./modulos/administradorGeneral/paginas/PaginaUsuariosAdminGeneral";
 import { PaginaHistorialAdminGeneral } from "./modulos/administradorGeneral/paginas/PaginaHistorialAdminGeneral";
 
-/* ========== ADMIN EVENTOS (exports *default*) ========== */
 /* ========== ADMIN EVENTOS ========== */
 import LayoutAdminEventos from "./modulos/administradorEventos/paginas/LayoutAdminEventos";
-import  {PaginaCrearEventoAdminEventos } from "./modulos/administradorEventos/paginas/PaginaCrearEventoAdminEventos";
-import { PaginaGaleriaPlantillasAdminEventos } from "./modulos/administradorEventos/paginas/PaginaGaleriaPlantillasAdminEventos";
 import { PaginaListaEventosAdminEventos } from "./modulos/administradorEventos/paginas/PaginaListaEventosAdminEventos";
+import { PaginaCrearEventoAdminEventos } from "./modulos/administradorEventos/paginas/PaginaCrearEventoAdminEventos";
+import { PaginaGaleriaPlantillasAdminEventos } from "./modulos/administradorEventos/paginas/PaginaGaleriaPlantillasAdminEventos";
+
+/* ========== ADMIN ASISTENCIAS (NUEVO) ========== */
+import LayoutAdminAsistencias from "./modulos/administradorAsistencias/paginas/LayoutAdminAsistencias";
+import PaginaListaEventosAdminAsistencias from "./modulos/administradorAsistencias/paginas/PaginaListaEventosAdminAsistencias";
+import PaginaDetalleEventoAdminAsistencias from "./modulos/administradorAsistencias/paginas/PaginaDetalleEventoAdminAsistencias";
 
 
 function App() {
@@ -34,14 +38,18 @@ function App() {
 
       {/* ADMIN EVENTOS */}
       <Route path="/admin-eventos" element={<LayoutAdminEventos />}>
-        {/* /admin-eventos → /admin-eventos/lista */}
         <Route index element={<Navigate to="lista" replace />} />
         <Route path="lista" element={<PaginaListaEventosAdminEventos />} />
         <Route path="crear" element={<PaginaCrearEventoAdminEventos />} />
-        <Route
-          path="plantillas"
-          element={<PaginaGaleriaPlantillasAdminEventos />}
-        />
+        <Route path="plantillas" element={<PaginaGaleriaPlantillasAdminEventos />} />
+      </Route>
+
+      {/* 🟣 ADMIN ASISTENCIAS */}
+      <Route path="/admin-asistencias" element={<LayoutAdminAsistencias />}>
+        {/* /admin-asistencias → /admin-asistencias/eventos */}
+        <Route index element={<Navigate to="eventos" replace />} />
+        <Route path="eventos" element={<PaginaListaEventosAdminAsistencias />} />
+        <Route path="eventos/:id" element={<PaginaDetalleEventoAdminAsistencias />} />
       </Route>
 
       {/* RUTA DESCONOCIDA → LOGIN */}

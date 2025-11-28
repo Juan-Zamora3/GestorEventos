@@ -1,3 +1,4 @@
+// src/modulos/autenticacion/paginas/PaginaInicioSesion.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -30,6 +31,12 @@ export default function PaginaInicioSesion() {
         rol: "ADMIN_EVENTOS",
         ruta: "/admin-eventos",
       },
+      {
+        correo: "admin.asistencias@itsp.com",
+        contrasena: "asistencias123",
+        rol: "ADMIN_ASISTENCIAS",
+        ruta: "/admin-asistencias",
+      },
     ];
 
     const correoLimpio = correo.trim().toLowerCase();
@@ -38,8 +45,6 @@ export default function PaginaInicioSesion() {
         u.correo.toLowerCase() === correoLimpio &&
         u.contrasena === contrasena
     );
-
-    console.log("Intento login:", { correo, contrasena, encontrado });
 
     if (!encontrado) {
       alert("Credenciales incorrectas");
@@ -52,7 +57,6 @@ export default function PaginaInicioSesion() {
       mantenerSesion ? "true" : "false"
     );
 
-    console.log("Navegando a:", encontrado.ruta);
     navigate(encontrado.ruta);
   };
 
@@ -64,7 +68,6 @@ export default function PaginaInicioSesion() {
           <div className="flex items-center gap-3 mb-10">
             <img src={logoItsp} alt="Logo ITSPP" className="h-12 w-auto" />
             <div className="flex flex-col leading-tight">
-              <span className="text-[10px] font-semibold text-slate-200 uppercase tracking-[0.18em]"></span>
               <span className="text-[10px] font-semibold text-slate-800 uppercase tracking-[0.18em]">
                 Instituto Tecnológico Superior
               </span>
@@ -82,10 +85,19 @@ export default function PaginaInicioSesion() {
               Este login es para ingresar a la aplicación de gestión de eventos
               y constancias del ITSPP.
             </p>
-            {/* 👇 Info temporal para que recuerdes los usuarios de prueba */}
+
+            {/* Info temporal de usuarios de prueba */}
             <div className="mt-3 text-[11px] text-slate-500 space-y-1">
-              <p><strong>Admin general:</strong> admin@itsp.com / admin123</p>
-              <p><strong>Admin eventos:</strong> admin.eventos@itsp.com / 123456</p>
+              <p>
+                <strong>Admin general:</strong> admin@itsp.com / admin123
+              </p>
+              <p>
+                <strong>Admin eventos:</strong> admin.eventos@itsp.com / 123456
+              </p>
+              <p>
+                <strong>Admin asistencias:</strong>{" "}
+                admin.asistencias@itsp.com / asistencias123
+              </p>
             </div>
           </div>
 
@@ -143,7 +155,7 @@ export default function PaginaInicioSesion() {
               type="submit"
               className="mt-2 w-full rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold py-2.5 shadow-sm transition-colors"
             >
-              The Iniciar sesión
+              Iniciar sesión
             </button>
           </form>
         </div>
