@@ -38,7 +38,7 @@ const NavbarEvento: FC<Props> = ({ titulo }) => {
         </div>
         <nav className="mt-5 px-6 sm:px-10 pb-5">
           <div className="w-full bg-[#E5E9F6] rounded-md">
-            <ul className="flex items-center justify-center gap-10 text-sm text-[#5A5F8D] px-4 py-3">
+            <ul className="flex items-center justify-center gap-10 text-sm text-[#5A5F8D] px-2 py-1">
               {tabs.map((t) => {
                 const selected = activo === t.id;
                 return (

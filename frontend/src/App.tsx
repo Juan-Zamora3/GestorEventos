@@ -20,6 +20,12 @@ import SeccionIntegrantes from "./modulos/administradorEventos/componentes/creac
 import SeccionAjusteEvento from "./modulos/administradorEventos/componentes/creacionEvento/ajuste/SeccionAjusteEvento";
 import SeccionFormulario from "./modulos/administradorEventos/componentes/creacionEvento/formulario/SeccionFormulario";
 import SeccionInformacionDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/informacion/SeccionInformacionDesenglose";
+import SeccionEquiposDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/equipos/SeccionEquiposDesenglose";
+import SeccionPersonalDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/personal/SeccionPersonalDesenglose";
+import SeccionAsistenciasDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/asistencias/SeccionAsistenciasDesenglose";
+import SeccionPlantillasDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/plantillas/SeccionPlantillasDesenglose";
+import SeccionConstanciasDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/constancias/SeccionConstanciasDesenglose";
+import SeccionFormularioDesenglose from "./modulos/administradorEventos/componentes/desengloseEvento/formulario/SeccionFormularioDesenglose";
 import { PaginaGaleriaPlantillasAdminEventos } from "./modulos/administradorEventos/paginas/PaginaGaleriaPlantillasAdminEventos";
 import { PaginaListaEventosAdminEventos } from "./modulos/administradorEventos/paginas/PaginaListaEventosAdminEventos";
 
@@ -68,6 +74,12 @@ function App() {
         <Route path="evento/:id" element={<PaginaDesengloseEventoAdminEventos />}>
           <Route index element={<SeccionInformacionDesenglose />} />
           <Route path="informacion" element={<SeccionInformacionDesenglose />} />
+          <Route path="equipos" element={<SeccionEquiposDesenglose />} />
+          <Route path="personal" element={<SeccionPersonalDesenglose />} />
+          <Route path="asistencias" element={<SeccionAsistenciasDesenglose />} />
+          <Route path="plantillas" element={<SeccionPlantillasDesenglose />} />
+          <Route path="constancias" element={<SeccionConstanciasDesenglose />} />
+          <Route path="formulario" element={<SeccionFormularioDesenglose />} />
         </Route>
       </Route>
 
