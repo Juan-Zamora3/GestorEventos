@@ -28,7 +28,7 @@ export const PaginaGaleriaPlantillasAdminEventos: React.FC = () => {
         <div className={`transform-gpu transition-all duration-[2200ms] ease-in-out ${show ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}>
         {/* Fila superior: botón atrás + título */}
         <div className="flex items-center gap-4 mb-10">
-          <button onClick={() => navigate("/admin-eventos/lista")} className="h-10 w-10 rounded-full bg-white/15 flex items-center justify-center text-2xl leading-none">
+          <button onClick={() => navigate("/admin-eventos/lista", { state: { animateUp: true } })} className="h-10 w-10 rounded-full bg-white/15 flex items-center justify-center text-2xl leading-none">
             ←
           </button>
           <h1 className="text-[32px] font-semibold tracking-tight">

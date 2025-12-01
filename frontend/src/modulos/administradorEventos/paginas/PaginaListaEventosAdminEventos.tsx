@@ -1,6 +1,6 @@
 // src/modulos/administradorEventos/paginas/PaginaListaEventosAdminEventos.tsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   FiSearch,
   FiChevronDown,
@@ -48,6 +48,18 @@ const eventosMock: EventoCardAdminEventos[] = [
 export const PaginaListaEventosAdminEventos: React.FC = () => {
   const [animDown, setAnimDown] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialAnimateUp = Boolean((location.state as { animateUp?: boolean } | null)?.animateUp);
+  const [showList, setShowList] = useState<boolean>(!initialAnimateUp);
+  const [showHeader, setShowHeader] = useState<boolean>(!initialAnimateUp);
+  useEffect(() => {
+    const animateUp = Boolean((location.state as { animateUp?: boolean } | null)?.animateUp);
+    if (animateUp) {
+      const t1 = window.setTimeout(() => setShowHeader(true), 160);
+      const t2 = window.setTimeout(() => setShowList(true), 200);
+      return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+    }
+  }, [location.state]);
   const irGaleriaConTransicion = () => {
     setAnimDown(true);
     window.setTimeout(() => {
@@ -58,17 +70,15 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
     <div className="h-full flex flex-col bg-gradient-to-b from-[#192D69] to-[#6581D6]">
       {/* ZONA AZUL — título + plantillas (nada de barra blanca aquí) */}
       <section className="bg-transparent px-14 pt-10 pb-10 text-white">
-        <h1 className="text-4xl font-bold mb-8">Crear Evento</h1>
-
-        {/* Plantillas más grandes, alineadas a la derecha como en el diseño */}
-        <div className="flex justify-end w-full">
-          <FilaPlantillasRapidas size="large" onMasClick={irGaleriaConTransicion} />
+        <div className={`transform-gpu transition-all ${showHeader ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out -translate-y-12 opacity-0"}`}>
+          <h1 className="text-4xl font-bold mb-8">Crear Evento</h1>
+          <div className="flex justify-end w-full">
+            <FilaPlantillasRapidas size="large" onMasClick={irGaleriaConTransicion} />
+          </div>
         </div>
-        
-        
       </section>
 
-      <div className={`transform-gpu transition-transform duration-700 ease-in-out ${animDown ? "translate-y-28" : "translate-y-0"}`}>
+      <div className={`transform-gpu transition-all ${animDown ? "duration-700 ease-in-out translate-y-28 opacity-100" : showList ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"}`}>
         <div className="bg-[#EEF0F7] rounded-t-none">
           {/* BARRA BLANCA DE BUSCADOR en zona gris, tocando el borde azul */}
           <section className="px-14 -mt-6">
@@ -119,7 +129,7 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
           {/* GRID DE EVENTOS */}
           <section className="px-14 pt-6 pb-8">
             <div className="bg-white rounded-3xl shadow-sm px-6 py-4">
-              <GridEventosAdminEventos eventos={eventosMock} />
+              <GridEventosAdminEventos eventos={eventosMock} stagger={initialAnimateUp} />
             </div>
           </section>
         </div>

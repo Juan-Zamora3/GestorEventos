@@ -5,16 +5,25 @@ import type { EventoCardAdminEventos } from "./tiposAdminEventos";
 
 interface Props {
   eventos: EventoCardAdminEventos[];
+  stagger?: boolean;
 }
 
-const GridEventosAdminEventos: React.FC<Props> = ({ eventos }) => {
+const GridEventosAdminEventos: React.FC<Props> = ({ eventos, stagger = false }) => {
   const navigate = useNavigate();
+  const [entered, setEntered] = React.useState<boolean>(!stagger);
+  React.useEffect(() => {
+    if (stagger) {
+      const t = window.setTimeout(() => setEntered(true), 20);
+      return () => window.clearTimeout(t);
+    }
+  }, [stagger]);
   return (
     <section className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {eventos.map((evento) => (
+      {eventos.map((evento, idx) => (
         <article
           key={evento.id}
-          className="bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col"
+          className={`bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col transform-gpu transition-all duration-700 ${stagger ? (entered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8") : ""}`}
+          style={stagger ? { transitionDelay: `${idx * 120}ms` } : undefined}
           onClick={() => navigate(`/admin-eventos/evento/${evento.id}`)}
         >
           {/* Imagen */}
