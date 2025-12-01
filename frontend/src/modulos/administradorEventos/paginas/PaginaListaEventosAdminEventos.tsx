@@ -52,12 +52,12 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
     setAnimDown(true);
     window.setTimeout(() => {
       navigate("/admin-eventos/plantillas");
-    }, 400);
+    }, 650);
   };
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-gradient-to-b from-[#192D69] to-[#6581D6]">
       {/* ZONA AZUL — título + plantillas (nada de barra blanca aquí) */}
-      <section className="bg-gradient-to-r from-[#192D69] to-[#6581D6] px-14 pt-10 pb-10 text-white shadow-sm">
+      <section className="bg-transparent px-14 pt-10 pb-10 text-white">
         <h1 className="text-4xl font-bold mb-8">Crear Evento</h1>
 
         {/* Plantillas más grandes, alineadas a la derecha como en el diseño */}
@@ -68,8 +68,8 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
         
       </section>
 
-      <div className={`transition-transform duration-500 ease-out ${animDown ? "translate-y-24" : "translate-y-0"}`}>
-        <div className="bg-[#EEF0F7] rounded-t-[24px]">
+      <div className={`transform-gpu transition-transform duration-700 ease-in-out ${animDown ? "translate-y-28" : "translate-y-0"}`}>
+        <div className="bg-[#EEF0F7] rounded-t-none">
           {/* BARRA BLANCA DE BUSCADOR en zona gris, tocando el borde azul */}
           <section className="px-14 -mt-6">
             <div className="bg-white w-full rounded-full px-6 py-3 shadow-sm flex items-center gap-4">

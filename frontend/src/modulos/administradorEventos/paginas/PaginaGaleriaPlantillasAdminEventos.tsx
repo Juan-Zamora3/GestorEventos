@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import TarjetaPlantillaEvento from "../componentes/TarjetaPlantillaEvento";
@@ -17,9 +17,15 @@ const plantillas: PlantillaEvento[] = [
 
 export const PaginaGaleriaPlantillasAdminEventos: React.FC = () => {
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setShow(true), 150);
+    return () => window.clearTimeout(t);
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#192D69] to-[#476AC6] text-white">
       <section className="px-16 pt-10 pb-14">
+        <div className={`transform-gpu transition-all duration-[2200ms] ease-in-out ${show ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}>
         {/* Fila superior: botón atrás + título */}
         <div className="flex items-center gap-4 mb-10">
           <button onClick={() => navigate("/admin-eventos/lista")} className="h-10 w-10 rounded-full bg-white/15 flex items-center justify-center text-2xl leading-none">
@@ -70,6 +76,7 @@ export const PaginaGaleriaPlantillasAdminEventos: React.FC = () => {
               onClick={() => navigate("/admin-eventos/crear")}
             />
           ))}
+        </div>
         </div>
       </section>
     </div>
