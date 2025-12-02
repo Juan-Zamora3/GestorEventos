@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { useMemo, useRef, useState } from "react";
 import { FiSearch, FiMoreVertical, FiDownload } from "react-icons/fi";
+import AñadirPersonal from "./AñadirPersonal";
 
 interface Row {
   id: string;
@@ -48,6 +49,7 @@ const SeccionPersonalDesenglose: FC = () => {
   const [seleccion, setSeleccion] = useState<Set<string>>(new Set());
   const [roleMenuFor, setRoleMenuFor] = useState<string | undefined>(undefined);
   const tableRef = useRef<HTMLDivElement>(null);
+  const [openAdd, setOpenAdd] = useState(false);
 
   const filtrados = useMemo(() => {
     const term = busqueda.trim().toLowerCase();
@@ -104,7 +106,7 @@ const SeccionPersonalDesenglose: FC = () => {
         <div className="flex items-center gap-3">
           <button type="button" onClick={selectAll} className="px-5 py-2.5 rounded-full bg-[#F2F3FB] text-sm font-semibold text-slate-700 shadow-sm transform-gpu transition hover:bg-[#E9ECF9] hover:-translate-y-[1px] hover:scale-[1.02]">Seleccionar</button>
           <button type="button" onClick={eliminarSeleccionados} className="px-5 py-2.5 rounded-full bg-[#F2F3FB] text-sm font-semibold text-slate-700 shadow-sm transform-gpu transition hover:bg-[#E9ECF9] hover:-translate-y-[1px] hover:scale-[1.02]">Eliminar</button>
-          <button type="button" className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-sm font-semibold text-white shadow-sm transform-gpu transition hover:brightness-110 hover:-translate-y-[1px] hover:scale-[1.02]">Nuevo Equipo</button>
+          <button type="button" onClick={()=>setOpenAdd(true)} className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-sm font-semibold text-white shadow-sm transform-gpu transition hover:brightness-110 hover:-translate-y-[1px] hover:scale-[1.02]">Añadir Personal</button>
         </div>
       </div>
 
@@ -167,9 +169,18 @@ const SeccionPersonalDesenglose: FC = () => {
           </div>
         </div>
       </div>
+      {openAdd && (
+        <AñadirPersonal
+          open={openAdd}
+          onClose={()=>setOpenAdd(false)}
+          onAdd={(nuevo)=>{
+            setRows((prev)=>[...prev, nuevo]);
+            setOpenAdd(false);
+          }}
+        />
+      )}
     </section>
   );
 };
 
 export default SeccionPersonalDesenglose;
-
