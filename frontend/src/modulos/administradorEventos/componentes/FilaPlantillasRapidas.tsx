@@ -37,15 +37,17 @@ const FilaPlantillasRapidas: React.FC<Props> = ({ size = "normal", onMasClick })
   };
 
   return (
-    <div className="flex items-center gap-8">
-      {plantillas.map((plantilla) => (
-        <TarjetaPlantillaEvento
-          key={plantilla.id}
-          plantilla={plantilla}
-          size={size}
-          onClick={() => manejarClickPlantilla(plantilla.id)}
-        />
-      ))}
+    <div className="w-full overflow-x-auto snap-x snap-mandatory">
+      <div className="min-w-max flex items-center justify-space-between gap-8">
+        {plantillas.map((plantilla) => (
+          <TarjetaPlantillaEvento
+            key={plantilla.id}
+            plantilla={plantilla}
+            size={size}
+            onClick={() => manejarClickPlantilla(plantilla.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 };

@@ -67,21 +67,20 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
     }, 650);
   };
   return (
-    <div className="h-full flex flex-col bg-gradient-to-b from-[#192D69] to-[#6581D6]">
+    <div className="h-full flex flex-col ">
       {/* ZONA AZUL — título + plantillas (nada de barra blanca aquí) */}
-      <section className="bg-transparent px-14 pt-10 pb-10 text-white">
+      <section className="bg-transparent px-14 pt-2 pb-2 text-white">
         <div className={`transform-gpu transition-all ${showHeader ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out -translate-y-12 opacity-0"}`}>
-          <h1 className="text-4xl font-bold mb-8">Crear Evento</h1>
-          <div className="flex justify-end w-full">
-            <FilaPlantillasRapidas size="large" onMasClick={irGaleriaConTransicion} />
+          <h1 className="text-2xl font-bold mb-6">Crear Evento</h1>
+          <div className="flex justify-center w-full">
+            <FilaPlantillasRapidas size="normal" onMasClick={irGaleriaConTransicion} />
           </div>
         </div>
       </section>
 
-      <div className={`transform-gpu transition-all ${animDown ? "duration-700 ease-in-out translate-y-28 opacity-100" : showList ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"}`}>
-        <div className="bg-[#EEF0F7] rounded-t-none">
-          {/* BARRA BLANCA DE BUSCADOR en zona gris, tocando el borde azul */}
-          <section className="px-14 -mt-6">
+      <div className={`flex-1 min-h-0 transform-gpu transition-all ${animDown ? "duration-700 ease-in-out translate-y-28 opacity-100" : showList ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"}`}>
+        <div className="h-full bg-[#EEF0F7] rounded-t-none flex flex-col">
+          <section className="px-14 pt-5">
             <div className="bg-white w-full rounded-full px-6 py-3 shadow-sm flex items-center gap-4">
               {/* Buscador */}
               <div className="flex items-center gap-3 flex-1">
@@ -126,9 +125,8 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
             </div>
           </section>
 
-          {/* GRID DE EVENTOS */}
-          <section className="px-14 pt-6 pb-8">
-            <div className="bg-white rounded-3xl shadow-sm px-6 py-4">
+          <section className="px-14 pt-6 pb-8 flex-1 min-h-0">
+            <div className="bg-white rounded-3xl px-6 py-4 h-full overflow-auto">
               <GridEventosAdminEventos eventos={eventosMock} stagger={initialAnimateUp} />
             </div>
           </section>

@@ -71,7 +71,7 @@ const HeaderAdminEventos: FC = () => {
   }
 
   return (
-    <header className="w-full bg-gradient-to-r from-[#192D69] to-[#6581D6] text-white px-8 py-3 flex items-center justify-between shadow-md">
+    <header className="w-full bg-transparent text-white px-8 py-3 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <img src={logoTecnm} alt="TECNOLÓGICO NACIONAL DE MÉXICO" className="h-10 w-auto" />
       </div>

@@ -18,46 +18,31 @@ const GridEventosAdminEventos: React.FC<Props> = ({ eventos, stagger = false }) 
     }
   }, [stagger]);
   return (
-    <section className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <section className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 h-full">
       {eventos.map((evento, idx) => (
         <article
           key={evento.id}
-          className={`bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col transform-gpu transition-all duration-700 ${stagger ? (entered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8") : ""}`}
-          style={stagger ? { transitionDelay: `${idx * 120}ms` } : undefined}
+          className={`bg-white rounded-3xl overflow-hidden transition cursor-pointer relative transform-gpu transition-all duration-700 ${stagger ? (entered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8") : ""}`}
+          style={{ aspectRatio: "4 / 3", ...(stagger ? { transitionDelay: `${idx * 120}ms` } : {}) }}
           onClick={() => navigate(`/admin-eventos/evento/${evento.id}`)}
         >
-          {/* Imagen */}
-          <div className="h-40 w-full overflow-hidden">
-            <img
-              src={evento.imagen}
-              alt={evento.titulo}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Información */}
-          <div className="px-4 pt-3 pb-4 flex-1 flex flex-col">
-            <h3 className="text-sm font-semibold text-slate-800 mb-1 leading-snug">
-              {evento.titulo}
-            </h3>
-
-            <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
-              <span>{evento.fechaInicio}</span>
-              <span>{evento.fechaFin}</span>
+          <div className="absolute inset-0 flex flex-col">
+            <div className="flex-[2] basis-2/3 w-full overflow-hidden">
+              <img src={evento.imagen} alt={evento.titulo} className="w-full h-full object-cover" />
             </div>
-
-            <div className="flex items-center justify-between text-[11px] text-slate-500">
-              <span>{evento.equipos}</span>
-              <span>{evento.personas}</span>
-            </div>
-
-            {/* Estado */}
-            <div className="mt-3 flex items-center justify-end">
-              <span
-                className={`h-3 w-3 rounded-full ${
-                  evento.activo ? "bg-emerald-400" : "bg-slate-300"
-                }`}
-              />
+            <div className="flex-[1] basis-1/3 px-4 pt-2 pb-3 flex flex-col">
+              <h3 className="text-sm font-semibold text-slate-800 leading-snug">{evento.titulo}</h3>
+              <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                <span>{evento.fechaInicio}</span>
+                <span>{evento.fechaFin}</span>
+              </div>
+              <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                <span>{evento.equipos}</span>
+                <span>{evento.personas}</span>
+              </div>
+              <div className="mt-auto flex items-center justify-end">
+                <span className={`h-3 w-3 rounded-full ${evento.activo ? "bg-emerald-400" : "bg-slate-300"}`} />
+              </div>
             </div>
           </div>
         </article>

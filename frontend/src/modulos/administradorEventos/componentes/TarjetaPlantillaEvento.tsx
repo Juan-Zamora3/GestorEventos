@@ -11,8 +11,8 @@ interface Props {
 const TarjetaPlantillaEvento: React.FC<Props> = ({ plantilla, onClick, size = "normal" }) => {
   const sizeClasses =
     size === "large"
-      ? "w-[260px] h-[180px]"   // un poco más grandes
-      : "w-[230px] h-[150px]";
+      ? "w-[234px] h-[162px]"
+      : "w-[207px] h-[135px]";
 
   return (
     <button
@@ -23,11 +23,10 @@ const TarjetaPlantillaEvento: React.FC<Props> = ({ plantilla, onClick, size = "n
         rounded-[28px]
         overflow-hidden
         bg-white
-        shadow-sm
         border-[3px] border-white
-        hover:shadow-md hover:-translate-y-0.5
         transition
         flex
+        snap-start
       `}
       style={{ padding: 0 }}
     >
