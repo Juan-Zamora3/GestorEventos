@@ -1,7 +1,7 @@
 // src/modulos/administradorEventos/componentes/GridEventosAdminEventos.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import type { EventoCardAdminEventos } from "./tiposAdminEventos";
+import type { EventoCardAdminEventos } from "../tiposAdminEventos";
 
 interface Props {
   eventos: EventoCardAdminEventos[];

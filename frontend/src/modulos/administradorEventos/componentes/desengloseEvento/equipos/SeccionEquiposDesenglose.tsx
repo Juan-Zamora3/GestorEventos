@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FiSearch, FiUsers, FiUser } from "react-icons/fi";
-import ModalAgregarEquipo from "./components/ModalCrearEquipo";
-import ModalDetalleEquipo from "./components/ModalDetalleEquipo";
+import ModalAgregarEquipo from "./ModalCrearEquipo";
+import ModalDetalleEquipo from "./ModalDetalleEquipo";
 
 interface Equipo {
   id: string;
