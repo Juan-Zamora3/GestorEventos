@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
-import TarjetaPlantillaEvento from "../componentes/TarjetaPlantillaEvento";
+import TarjetaPlantillaEvento from "../componentes/IncioEvento/TarjetaPlantillaEvento";
 import type { PlantillaEvento } from "../componentes/tiposAdminEventos";
 
 const plantillas: PlantillaEvento[] = [

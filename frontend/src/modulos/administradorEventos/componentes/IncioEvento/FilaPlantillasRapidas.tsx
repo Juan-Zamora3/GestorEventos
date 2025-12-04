@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TarjetaPlantillaEvento from "./TarjetaPlantillaEvento";
-import type { PlantillaEvento } from "./tiposAdminEventos";
+import type { PlantillaEvento } from "../tiposAdminEventos";
 
 const plantillas: PlantillaEvento[] = [
   { id: "blanco",   titulo: "Evento en blanco", imagen: "/EventoBlanco.png" },

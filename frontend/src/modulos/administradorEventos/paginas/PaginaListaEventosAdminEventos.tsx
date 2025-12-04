@@ -8,8 +8,8 @@ import {
   FiList,
   FiArrowDown,
 } from "react-icons/fi";
-import FilaPlantillasRapidas from "../componentes/FilaPlantillasRapidas";
-import GridEventosAdminEventos from "../componentes/GridEventosAdminEventos";
+import FilaPlantillasRapidas from "../componentes/IncioEvento/FilaPlantillasRapidas";
+import GridEventosAdminEventos from "../componentes/IncioEvento/GridEventosAdminEventos";
 import type { EventoCardAdminEventos } from "../componentes/tiposAdminEventos";
 
 const eventosMock: EventoCardAdminEventos[] = [

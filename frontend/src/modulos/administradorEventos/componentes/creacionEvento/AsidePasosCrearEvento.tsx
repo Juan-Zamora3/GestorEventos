@@ -20,7 +20,7 @@ const AsidePasosCrearEvento: FC<Props> = ({ pasoActual }) => {
     // Aside lateral con indicador visual del paso activo
     <aside className="w-80 h-full min-h-0 bg-[#F4F2FF] px-10 py-10 flex flex-col border-r border-[#E0DDFB]">
       <h2 className="text-2xl font-semibold text-slate-900 mb-10">Crear Evento</h2>
-      <ol className="space-y-6 text-sm">
+      <ol className="space-y-1 text-sm">
         {pasos.map((p, idx) => {
           const estado = p.id < pasoActual ? "done" : p.id === pasoActual ? "current" : "todo";
           const seleccionado = estado !== "todo";

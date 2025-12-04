@@ -1,6 +1,6 @@
 // src/modulos/administradorEventos/componentes/TarjetaPlantillaEvento.tsx
 import React from "react";
-import type { PlantillaEvento } from "./tiposAdminEventos";
+import type { PlantillaEvento } from "../tiposAdminEventos";
 
 interface Props {
   plantilla: PlantillaEvento;
