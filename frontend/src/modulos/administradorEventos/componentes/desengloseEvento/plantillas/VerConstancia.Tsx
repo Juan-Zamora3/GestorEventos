@@ -22,10 +22,12 @@ interface Props {
   onGuardar: (data: { titulo: string; tipo: string }) => void;
 }
 
-/** Construye la URL del PDF para el MODAL (ctx=modal evita que comparta zoom con los cards) */
+/** Construye la URL del PDF para el MODAL con zoom fijo y sin UI */
 const buildPdfSrc = (pdfUrl?: string) => {
-  const base = pdfUrl || "/Hackatec2.pdf";
-  return `${base}?ctx=modal#page=1&zoom=page-fit&toolbar=0&navpanes=0`;
+  const base = pdfUrl && pdfUrl.trim() !== "" ? pdfUrl : "/Hackatec2.pdf";
+  const v = Date.now();
+  // Cache-buster y contexto ANTES del hash para forzar instancia única del visor
+  return `${base}?ctx=modal&v=${v}#page=1&zoom=page-fit&toolbar=0&navpanes=0`;
 };
 
 const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
@@ -59,12 +61,7 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
   } | null>(null);
   const [dragging, setDragging] = useState(false);
 
-  // Sincroniza título/tipo cuando cambias de plantilla o vuelves a abrir el modal
-  useEffect(() => {
-    if (!open) return;
-    setFormNombre(item.titulo);
-    setFormTipo(item.tipo);
-  }, [item, open]);
+  // (sin efecto de sincronización para evitar cascadas de render)
 
   // Limpia blob cuando se destruye el componente
   useEffect(() => {
@@ -303,7 +300,7 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
       onDropCapture={guardDropOutsideEditor}
     >
       {/* Modal fijo: NO crece, solo hace scroll interno */}
-      <div className="w-[1400px] max-w-[96vw] h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="w-[1600px] max-w-[98vw] h-[92vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
         <header className="px-8 py-5 bg-gradient-to-r from-[#3A62D6] to-[#5B4AE5] text-white flex items-center justify-between flex-none">
           <h2 className="text-lg font-semibold">
             Configuración De Constancia
@@ -453,12 +450,13 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
             <div className="border rounded-xl bg-[#F9FAFF] h-full flex items-center justify-center p-4">
               <div
                 ref={previewRef}
-                className="relative w-full max-w-[700px] h-[90%] rounded-xl bg-white shadow"
+                className="relative w-full max-w-[820px] aspect-[210/297] rounded-xl bg-white shadow overflow-hidden"
                 onMouseMove={handlePreviewMouseMove}
                 onMouseUp={handleStopDrag}
                 onMouseLeave={handleStopDrag}
               >
                 <iframe
+                  key={pdfSrc}
                   src={pdfSrc}
                   title="Vista previa PDF"
                   className="absolute inset-0 w-full h-full rounded-xl pointer-events-none"
