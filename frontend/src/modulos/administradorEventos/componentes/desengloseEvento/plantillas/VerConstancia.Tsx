@@ -1,5 +1,11 @@
-import type { FC, DragEvent, CSSProperties } from "react";
+import type {
+  FC,
+  DragEvent,
+  CSSProperties,
+  MouseEvent as ReactMouseEvent,
+} from "react";
 import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface PlantillaItem {
   id: string;
@@ -33,6 +39,21 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [texto, setTexto] = useState<string>("");
 
+  // === POSICIÓN ARRASTRABLE DEL TEXTO EN LA VISTA PREVIA ===
+  const previewRef = useRef<HTMLDivElement | null>(null);
+  // porcentaje dentro de la hoja (50,60 = centrado aprox.)
+  const [textPos, setTextPos] = useState<{ x: number; y: number }>({
+    x: 50,
+    y: 60,
+  });
+  const dragStartRef = useRef<{
+    x: number;
+    y: number;
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+  const [dragging, setDragging] = useState(false);
+
   // Limpia blobs cuando cambias o cierras
   useEffect(() => {
     return () => {
@@ -44,29 +65,57 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
 
   // --- utilidades para variables/chips ---
 
-  const serialize = () => {
-    const root = contentRef.current;
-    if (!root) return "";
-    const pieces: string[] = [];
+ const serialize = () => {
+  const root = contentRef.current;
+  if (!root) return "";
+  const pieces: string[] = [];
 
-    const walk = (node: Node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        pieces.push(node.textContent ?? "");
+  const walk = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      pieces.push(node.textContent ?? "");
+      return;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+
+      // Chip de variable {Nombre}, {Equipo}, etc.
+      if (el.dataset.var) {
+        pieces.push(`{${el.dataset.var}}`);
         return;
       }
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node as HTMLElement;
-        if (el.dataset.var) {
-          pieces.push(`{${el.dataset.var}}`);
-          return;
-        }
-        el.childNodes.forEach(walk);
-      }
-    };
 
-    root.childNodes.forEach(walk);
-    return pieces.join("");
+      // Saltos explícitos <br>
+      if (el.tagName === "BR") {
+        pieces.push("\n");
+        return;
+      }
+
+      const isBlock =
+        el.tagName === "DIV" ||
+        el.tagName === "P" ||
+        el.tagName === "LI";
+
+      el.childNodes.forEach(walk);
+
+      // Cuando el navegador mete <div> por cada Enter, forzamos un \n
+      if (isBlock) {
+        pieces.push("\n");
+      }
+    }
   };
+
+  root.childNodes.forEach(walk);
+
+  const raw = pieces.join("");
+
+  // Limpiamos un poco: quitamos espacios antes de \n y evitamos 1000 líneas vacías
+  return raw
+    .replace(/\s+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
+};
+
 
   const makeChip = (v: string) => {
     const el = document.createElement("span");
@@ -177,9 +226,7 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
   };
 
   // --- PDF y estilos para vista previa ----
-
-  // Usa siempre algo válido: blob del input o Hackatec2 del public
-  const pdfSrc = `${archivoUrl ?? "/Hackatec2.pdf"}#page=1&zoom=page-width&toolbar=1&navpanes=0`;
+  const pdfSrc = `${archivoUrl ?? "/Hackatec2.pdf"}#page=1&zoom=page-fit&toolbar=0&navpanes=0`;
 
   const previewTextStyle: CSSProperties = {
     fontFamily: varTipografia,
@@ -198,16 +245,60 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
     wordBreak: "break-word",
   };
 
-  return (
+  // === handlers para ARRASTRAR el texto en la vista previa ===
+  const handleTextMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragStartRef.current = {
+      x: textPos.x,
+      y: textPos.y,
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+    };
+    setDragging(true);
+  };
+
+  const handlePreviewMouseMove = (e: ReactMouseEvent<HTMLDivElement>) => {
+    if (!dragging || !dragStartRef.current || !previewRef.current) return;
+
+    const rect = previewRef.current.getBoundingClientRect();
+    const { x, y, mouseX, mouseY } = dragStartRef.current;
+
+    const dx = e.clientX - mouseX;
+    const dy = e.clientY - mouseY;
+
+    const startXPx = (x / 100) * rect.width;
+    const startYPx = (y / 100) * rect.height;
+
+    const newXPx = startXPx + dx;
+    const newYPx = startYPx + dy;
+
+    let newX = (newXPx / rect.width) * 100;
+    let newY = (newYPx / rect.height) * 100;
+
+    // lo limitamos un poco para que no se salga de la hoja
+    newX = Math.min(95, Math.max(5, newX));
+    newY = Math.min(95, Math.max(5, newY));
+
+    setTextPos({ x: newX, y: newY });
+  };
+
+  const handleStopDrag = () => {
+    setDragging(false);
+  };
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/30"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30"
       onDragOverCapture={guardDropOutsideEditor}
       onDropCapture={guardDropOutsideEditor}
     >
       {/* Modal fijo: NO crece, solo hace scroll interno */}
       <div className="w-[1400px] max-w-[96vw] h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
         <header className="px-8 py-5 bg-gradient-to-r from-[#3A62D6] to-[#5B4AE5] text-white flex items-center justify-between flex-none">
-          <h2 className="text-lg font-semibold">Configuración De Constancias</h2>
+          <h2 className="text-lg font-semibold">
+            Configuración De Constancia
+          </h2>
           <button
             type="button"
             onClick={onClose}
@@ -217,7 +308,7 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
           </button>
         </header>
 
-        <div className="flex-1 px-6 py-5 flex gap-6 items-stretch overflow-hidden">
+        <div className="flex-1 px-6 py-5 flex gap-6 items-stretch overflow-x-hidden overflow-y-auto">
           {/* IZQUIERDA: datos + editor */}
           <div className="w-[360px] flex-none h-full overflow-y-auto">
             <div className="mb-4">
@@ -293,24 +384,29 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
                 Variables disponibles
               </label>
               <div className="flex flex-wrap gap-2">
-                {["Nombre", "Fecha", "Mensaje", "Equipo", "Concurso", "Añadir"].map(
-                  (v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      draggable
-                      onDragStart={(e) =>
-                        startDrag(e, v === "Añadir" ? "Variable" : v)
-                      }
-                      onClick={() =>
-                        insertVariable(v === "Añadir" ? "Variable" : v)
-                      }
-                      className="px-3 py-1.5 rounded-full bg-[#F2F3FB] text-[11px] font-semibold text-slate-700 cursor-grab active:cursor-grabbing"
-                    >
-                      {v}
-                    </button>
-                  )
-                )}
+                {[
+                  "Nombre",
+                  "Fecha",
+                  "Mensaje",
+                  "Equipo",
+                  "Concurso",
+                  "Añadir",
+                ].map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    draggable
+                    onDragStart={(e) =>
+                      startDrag(e, v === "Añadir" ? "Variable" : v)
+                    }
+                    onClick={() =>
+                      insertVariable(v === "Añadir" ? "Variable" : v)
+                    }
+                    className="px-3 py-1.5 rounded-full bg-[#F2F3FB] text-[11px] font-semibold text-slate-700 cursor-grab active:cursor-grabbing"
+                  >
+                    {v}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -343,20 +439,37 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
             </div>
           </div>
 
-          {/* CENTRO: vista previa simple del PDF + texto encima */}
+          {/* CENTRO: vista previa del PDF + texto ARRASTRABLE */}
           <div className="flex-1 h-full overflow-y-auto min-w-0">
             <div className="border rounded-xl bg-[#F9FAFF] h-full flex items-center justify-center p-4">
-              <div className="relative w-full max-w-[700px] h-[90%] rounded-xl bg-white shadow">
+              <div
+                ref={previewRef}
+                className="relative w-full max-w-[700px] h-[90%] rounded-xl bg-white shadow"
+                onMouseMove={handlePreviewMouseMove}
+                onMouseUp={handleStopDrag}
+                onMouseLeave={handleStopDrag}
+              >
                 <iframe
                   src={pdfSrc}
                   title="Vista previa PDF"
-                  className="absolute inset-0 w-full h-full rounded-xl"
+                  className="absolute inset-0 w-full h-full rounded-xl pointer-events-none"
                 />
-                {/* Texto encima del PDF, sin afectar layout */}
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center px-16">
+                {/* Texto draggable encima del PDF */}
+                <div
+                  onMouseDown={handleTextMouseDown}
+                  style={{
+                    position: "absolute",
+                    top: `${textPos.y}%`,
+                    left: `${textPos.x}%`,
+                    transform: "translate(-50%, -50%)",
+                    cursor: dragging ? "grabbing" : "grab",
+                    pointerEvents: "auto",
+                  }}
+                  className="px-6"
+                >
                   <p
                     style={previewTextStyle}
-                    className="max-h-[80%] overflow-hidden"
+                     className="max-h-[80%] max-w-[100%] overflow-hidden"
                   >
                     {texto || "Aquí aparecerá el texto de la constancia."}
                   </p>
@@ -462,7 +575,8 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

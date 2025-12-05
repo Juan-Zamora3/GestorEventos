@@ -25,7 +25,7 @@ const TarjetaPlantillaEvento: React.FC<Props> = ({ plantilla, onClick, size = "n
         bg-white
         border-[3px] border-white
         transition
-        flex
+        relative flex
         snap-start
       `}
       style={{ padding: 0 }}
@@ -35,6 +35,11 @@ const TarjetaPlantillaEvento: React.FC<Props> = ({ plantilla, onClick, size = "n
         alt={plantilla.titulo}
         className="w-full h-full object-cover"
       />
+      <div className="absolute top-2 left-2 right-2 flex">
+        <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/85 text-slate-800 text-[12px] font-semibold shadow-sm">
+          {plantilla.titulo}
+        </span>
+      </div>
     </button>
   );
 };

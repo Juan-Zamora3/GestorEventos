@@ -121,13 +121,28 @@ const SeccionEquiposDesenglose: React.FC = () => {
               key={eq.id}
               type="button"
               onClick={() => { if (!seleccionando) setShowDetalle(true); }}
-              className={`bg-white rounded-2xl shadow-[0_0_0_1px_rgba(15,23,42,0.06)] hover:shadow-lg px-5 py-4 text-left border-l-[4px] ${seleccion.has(eq.id) ? "border-[#5B4AE5]" : "border-[#7B5CFF]"} transform-gpu transition-all hover:-translate-y-1 hover:scale-[1.02] ${entered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-6"}`}
+              className={`relative bg-white rounded-2xl shadow-[0_0_0_1px_rgba(15,23,42,0.06)] hover:shadow-lg px-5 py-4 text-left border-l-[4px] ${seleccion.has(eq.id) ? "border-[#5B4AE5]" : "border-[#7B5CFF]"} transform-gpu transition-all hover:-translate-y-1 hover:scale-[1.02] ${entered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-6"}`}
               style={{ transitionDelay: `${idx * 80}ms` }}
             >
-              <p className="text-sm font-semibold text-slate-900 mb-1">
-                {eq.nombre}
-              </p>
-              <p className="text-[11px] text-slate-500 mb-3">
+              {seleccionando && (
+                <button
+                  type="button"
+                  aria-label="Seleccionar"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const next = new Set(seleccion);
+                    if (next.has(eq.id)) next.delete(eq.id); else next.add(eq.id);
+                    setSeleccion(next);
+                  }}
+                  className={`absolute top-3 right-3 h-5 w-5 rounded-full border ${seleccion.has(eq.id) ? "bg-[#5B4AE5] border-[#5B4AE5]" : "border-slate-300 bg-white"}`}
+                />
+              )}
+              <div className="absolute top-3 left-1/2 -translate-x-1/2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/90 text-slate-900 text-[12px] font-semibold shadow-sm">
+                  {eq.nombre}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mb-3 mt-6">
                 {eq.institucion}
               </p>
 
@@ -136,21 +151,6 @@ const SeccionEquiposDesenglose: React.FC = () => {
                 <div className="flex items-center justify-between"><span className="inline-flex items-center gap-1"><FiUser /> Asesor</span><span>{eq.asesor}</span></div>
               </div>
 
-              {seleccionando && (
-                <div className="mt-2 flex items-center justify-end">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const next = new Set(seleccion);
-                      if (next.has(eq.id)) next.delete(eq.id); else next.add(eq.id);
-                      setSeleccion(next);
-                    }}
-                    className={`h-5 w-5 rounded-full border ${seleccion.has(eq.id) ? "bg-[#5B4AE5] border-[#5B4AE5]" : "border-slate-300"}`}
-                    aria-label="Seleccionar"
-                  />
-                </div>
-              )}
 
               <div className="mt-2 flex items-center justify-between">
                 <button

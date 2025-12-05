@@ -1,5 +1,5 @@
 // src/modulos/administradorEventos/paginas/PaginaListaEventosAdminEventos.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   FiSearch,
@@ -47,38 +47,95 @@ const eventosMock: EventoCardAdminEventos[] = [
 
 export const PaginaListaEventosAdminEventos: React.FC = () => {
   const [animDown, setAnimDown] = useState(false);
+
+  // 🔍 query del buscador
+  const [query, setQuery] = useState<string>("");
+
+  // si luego jalas eventos de la BD, solo cambia este estado
+  const [eventos] = useState<EventoCardAdminEventos[]>(eventosMock);
+
   const navigate = useNavigate();
   const location = useLocation();
-  const initialAnimateUp = Boolean((location.state as { animateUp?: boolean } | null)?.animateUp);
+
+  const initialAnimateUp = Boolean(
+    (location.state as { animateUp?: boolean } | null)?.animateUp,
+  );
   const [showList, setShowList] = useState<boolean>(!initialAnimateUp);
   const [showHeader, setShowHeader] = useState<boolean>(!initialAnimateUp);
+
   useEffect(() => {
-    const animateUp = Boolean((location.state as { animateUp?: boolean } | null)?.animateUp);
+    const animateUp = Boolean(
+      (location.state as { animateUp?: boolean } | null)?.animateUp,
+    );
     if (animateUp) {
       const t1 = window.setTimeout(() => setShowHeader(true), 160);
       const t2 = window.setTimeout(() => setShowList(true), 200);
-      return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+      return () => {
+        window.clearTimeout(t1);
+        window.clearTimeout(t2);
+      };
     }
   }, [location.state]);
+
   const irGaleriaConTransicion = () => {
     setAnimDown(true);
     window.setTimeout(() => {
       navigate("/admin-eventos/plantillas");
     }, 650);
   };
+
+  // 🔎 eventos filtrados por el buscador
+  const eventosFiltrados = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return eventos;
+
+    return eventos.filter((e) => {
+      const titulo = e.titulo.toLowerCase();
+      const fechaInicio = e.fechaInicio?.toLowerCase?.() ?? "";
+      const fechaFin = e.fechaFin?.toLowerCase?.() ?? "";
+      const equipos = e.equipos?.toLowerCase?.() ?? "";
+      const personas = e.personas?.toLowerCase?.() ?? "";
+
+      return (
+        titulo.includes(q) ||
+        fechaInicio.includes(q) ||
+        fechaFin.includes(q) ||
+        equipos.includes(q) ||
+        personas.includes(q)
+      );
+    });
+  }, [eventos, query]);
+
   return (
     <div className="h-full flex flex-col ">
       {/* ZONA AZUL — título + plantillas (nada de barra blanca aquí) */}
       <section className="bg-transparent px-14 pt-2 pb-2 text-white">
-        <div className={`transform-gpu transition-all ${showHeader ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out -translate-y-12 opacity-0"}`}>
+        <div
+          className={`transform-gpu transition-all ${
+            showHeader
+              ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100"
+              : "duration-[1100ms] ease-in-out -translate-y-12 opacity-0"
+          }`}
+        >
           <h1 className="text-2xl font-bold mb-6">Crear Evento</h1>
           <div className="flex justify-center w-full">
-            <FilaPlantillasRapidas size="normal" onMasClick={irGaleriaConTransicion} />
+            <FilaPlantillasRapidas
+              size="normal"
+              onMasClick={irGaleriaConTransicion}
+            />
           </div>
         </div>
       </section>
 
-      <div className={`flex-1 min-h-0 transform-gpu transition-all ${animDown ? "duration-700 ease-in-out translate-y-28 opacity-100" : showList ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100" : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"}`}>
+      <div
+        className={`flex-1 min-h-0 transform-gpu transition-all ${
+          animDown
+            ? "duration-700 ease-in-out translate-y-28 opacity-100"
+            : showList
+            ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100"
+            : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"
+        }`}
+      >
         <div className="h-full bg-[#EEF0F7] rounded-t-none flex flex-col">
           <section className="px-14 pt-5">
             <div className="bg-white w-full rounded-full px-6 py-3 shadow-sm flex items-center gap-4">
@@ -87,7 +144,9 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
                 <FiSearch className="text-slate-400 text-lg" />
                 <input
                   type="text"
-                  placeholder="Buscar evento"
+                  placeholder="Buscar evento (nombre, fecha, equipos...)"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                   className="flex-1 text-sm text-slate-700 outline-none placeholder:text-slate-400"
                 />
               </div>
@@ -127,7 +186,16 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
 
           <section className="px-14 pt-6 pb-8 flex-1 min-h-0">
             <div className="bg-white rounded-3xl px-6 py-4 h-full overflow-auto">
-              <GridEventosAdminEventos eventos={eventosMock} stagger={initialAnimateUp} />
+              <GridEventosAdminEventos
+                eventos={eventosFiltrados}
+                stagger={initialAnimateUp}
+              />
+              {/* opcional: mensaje cuando no hay resultados */}
+              {eventosFiltrados.length === 0 && (
+                <p className="mt-6 text-center text-sm text-slate-500">
+                  No se encontraron eventos para “{query}”.
+                </p>
+              )}
             </div>
           </section>
         </div>
