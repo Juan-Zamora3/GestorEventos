@@ -127,6 +127,8 @@ const SeccionConstanciasDesenglose: FC = () => {
   // === PLANTILLA PARA PREVIEW / ENVÍO ===
   // Por ahora está fija, cámbiala luego por la URL guardada en BD
   const PLANTILLA_PDF_URL = "/Hackatec2.pdf";
+  const pdfSrc = `${PLANTILLA_PDF_URL}#page=1&zoom=page-width&toolbar=0&navpanes=0`;
+
 
   // misma idea que antes para generar imagen rápida
   const generarImagen = (nombre: string) => {
@@ -221,7 +223,7 @@ const SeccionConstanciasDesenglose: FC = () => {
             <div className="flex items-center justify-between">
               <motion.div
                 ref={tabsContainerRef}
-                className="flex items-center gap-6 overflow-x-auto px-2"
+                className="flex items-center gap-6 overflow-x-auto px-2 no-scrollbar"
                 key={catId}
                 initial={{ x: navDir * 12, opacity: 0.98 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -308,63 +310,88 @@ const SeccionConstanciasDesenglose: FC = () => {
 
         {/* ===== LADO DERECHO: PREVIEW CON PLANTILLA ===== */}
         <main className="rounded-2xl border border-slate-200 bg-white p-4">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-semibold text-slate-900">
-              Previsualización
+  <div className="flex items-center justify-between mb-3">
+    <p className="text-sm font-semibold text-slate-900">Previsualización</p>
+  </div>
+
+  <div className="flex items-center justify-center">
+    <div
+      className="
+        relative 
+        w-[720px] 
+        aspect-[210/297]       /* proporción carta vertical */
+        bg-[#F9FAFF]
+        rounded-xl 
+        border border-slate-200 
+        overflow-hidden
+      "
+    >
+      {/* Fondo de la constancia (puede ser PNG o JPG generado de tu PDF) */}
+     <iframe
+  src={pdfSrc}
+  title="Plantilla constancia"
+  className="absolute inset-0 w-full h-full rounded-xl pointer-events-none"
+/>
+
+      {personaActual ? (
+        <>
+          {/* Aquí iría el texto fijo que será parte de la constancia si quieres */}
+          {/* Título / texto fijo (opcional) */}
+          {/* 
+          <div
+            className="absolute left-1/2 w-[70%] text-center"
+            style={{ top: "47%", transform: "translateX(-50%)" }}
+          >
+            <p className="text-base font-semibold tracking-[0.15em] text-slate-700">
+              CONSTANCIA
             </p>
           </div>
+          */}
 
-          <div className="flex items-center justify-center">
-            <div className="relative w-[680px] h-[480px] bg-[#F9FAFF] rounded-xl border border-slate-200 flex items-center justify-center overflow-hidden">
-              <div className="relative w-[640px] h-[440px] bg-white rounded-xl shadow">
-                {/* Fondo de la plantilla (PDF) */}
-                <iframe
-                  src={`${PLANTILLA_PDF_URL}#page=1&zoom=page-width&toolbar=0&navpanes=0`}
-                  title="Plantilla constancia"
-                  className="absolute inset-0 w-full h-full rounded-xl"
-                />
-
-                {/* Texto de la constancia encima (solo vista, no editable aquí) */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-16">
-                  {personaActual ? (
-                    <>
-                      <p className="text-xl font-semibold text-slate-700 mb-4">
-                        CONSTANCIA
-                      </p>
-                      <p className="text-lg text-slate-800 text-center">
-                        {personaActual.nombre}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-slate-500">
-                      Selecciona personas para previsualizar
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={anterior}
-              className="h-8 w-8 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
-            >
-              ‹
-            </button>
-            <p className="text-xs text-slate-600">
-              Constancia {total ? index + 1 : 0} de {total}
+          {/* Nombre pegado a la constancia */}
+          <div
+            className="absolute left-1/2 w-[70%] text-center"
+            style={{
+              top: "34%",              // Mueve esto arriba/abajo hasta que quede exacto
+              transform: "translateX(-55%)",
+            }}
+          >
+            <p className="text-lg font-semibold text-[#1F2933] tracking-wide">
+              {personaActual.nombre}
             </p>
-            <button
-              type="button"
-              onClick={siguiente}
-              className="h-8 w-8 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
-            >
-              <FiChevronRight />
-            </button>
           </div>
-        </main>
+        </>
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-sm text-slate-500">
+            Selecciona personas para previsualizar
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div className="mt-4 flex items-center justify-between">
+    <button
+      type="button"
+      onClick={anterior}
+      className="h-8 w-8 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
+    >
+      ‹
+    </button>
+    <p className="text-xs text-slate-600">
+      Constancia {total ? index + 1 : 0} de {total}
+    </p>
+    <button
+      type="button"
+      onClick={siguiente}
+      className="h-8 w-8 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
+    >
+      <FiChevronRight />
+    </button>
+  </div>
+</main>
+
       </div>
 
       {/* ===== MODALES ===== */}

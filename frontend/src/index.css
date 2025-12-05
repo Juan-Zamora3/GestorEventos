@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Oculta scrollbars pero mantiene el scroll funcional */
+.no-scrollbar {
+  -ms-overflow-style: none;   /* IE y Edge */
+  scrollbar-width: none;      /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari, Edge nuevo */
+}
