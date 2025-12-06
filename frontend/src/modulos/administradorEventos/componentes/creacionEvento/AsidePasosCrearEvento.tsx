@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface Props { pasoActual: number }
+interface Props { pasoActual: number; onCancel?: () => void }
 
 // Lista de pasos del wizard y sus descripciones
 const pasos = [
@@ -14,7 +14,7 @@ const pasos = [
   { id: 5, titulo: "Formulario", descripcion: "Define los datos a capturar." },
 ];
 
-const AsidePasosCrearEvento: FC<Props> = ({ pasoActual }) => {
+const AsidePasosCrearEvento: FC<Props> = ({ pasoActual, onCancel }) => {
   const navigate = useNavigate();
   return (
     // Aside lateral con indicador visual del paso activo
@@ -55,7 +55,7 @@ const AsidePasosCrearEvento: FC<Props> = ({ pasoActual }) => {
       {/* Acción secundaria para abortar el proceso */}
       <button
         type="button"
-        onClick={() => navigate("/admin-eventos/lista")}
+        onClick={() => (onCancel ? onCancel() : navigate("/admin-eventos/lista"))}
         className="mt-auto w-full rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white font-semibold py-3 text-sm shadow-md"
       >
         Cancelar

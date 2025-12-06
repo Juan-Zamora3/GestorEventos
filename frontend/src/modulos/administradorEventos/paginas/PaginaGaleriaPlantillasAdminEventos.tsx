@@ -91,7 +91,7 @@ export const PaginaGaleriaPlantillasAdminEventos: React.FC = () => {
               plantilla={p}
               onClick={() =>
                 navigate("/admin-eventos/crear/informacion", {
-                  state: { plantillaId: p.id },
+                  state: { plantillaId: p.id, slideIn: true },
                 })
               }
             />

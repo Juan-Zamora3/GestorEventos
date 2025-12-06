@@ -1,6 +1,7 @@
 // src/modulos/administradorEventos/paginas/PaginaListaEventosAdminEventos.tsx
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   FiSearch,
   FiChevronDown,
@@ -100,7 +101,7 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
   }, [eventos, query]);
 
   return (
-    <div className="h-full flex flex-col">
+    <motion.div className="h-full flex flex-col" initial={initialAnimateUp ? { y: 24, opacity: 0, scale: 0.98 } : {}} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.28, 1] }}>
       {/* ZONA AZUL — título + plantillas */}
       <section className="bg-transparent px-14 pt-2 pb-2 text-white">
         <div className="transform-gpu transition-all duration-[900ms] ease-in-out translate-y-0 opacity-100">
@@ -188,7 +189,7 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
           </section>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

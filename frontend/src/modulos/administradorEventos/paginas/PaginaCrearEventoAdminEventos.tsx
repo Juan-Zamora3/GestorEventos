@@ -1,14 +1,38 @@
 // src/modulos/administradorEventos/paginas/PaginaCrearEventoAdminEventos.tsx
 // Página PaginaCrearEventoAdminEventos
 // Notas: layout del wizard de creación; renderiza Aside + Outlet de pasos.
-import { Outlet, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import type { CampoEvento, ParticipantesDraft } from "../componentes/tiposAdminEventos";
 import AsidePasosCrearEvento from "../componentes/creacionEvento/AsidePasosCrearEvento";
 
+type Tiempo = { id: string; nombre: string; inicio: string; fin: string };
+type AjusteDraft = {
+  caracteristicas: Record<string, boolean>;
+  envioQR: string;
+  costoInscripcion: string;
+  tiempos: Tiempo[];
+};
+
+export type CrearEventoOutletContext = {
+  ajuste: AjusteDraft;
+  setAjuste: (a: AjusteDraft) => void;
+  participantes: ParticipantesDraft;
+  setParticipantes: (p: ParticipantesDraft) => void;
+  onCancel: () => void;
+};
+
 export const PaginaCrearEventoAdminEventos: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const path = location.pathname;
+  type NavState = { slideIn?: boolean; plantillaId?: string } | null;
+  const slideIn = Boolean((location.state as NavState)?.slideIn);
+  const [exiting, setExiting] = useState(false);
+  // reservado por si queremos debouncing o cancelar animaciones futuras
+  const exitTimer = useRef<number | undefined>(undefined);
+  void exitTimer;
   // Determina el paso activo leyendo la URL actual del wizard
   const pasoActual = path.endsWith("/informacion")
     ? 1
@@ -20,13 +44,6 @@ export const PaginaCrearEventoAdminEventos: React.FC = () => {
     ? 4
     : 5;
 
-  type Tiempo = { id: string; nombre: string; inicio: string; fin: string };
-  type AjusteDraft = {
-    caracteristicas: Record<string, boolean>;
-    envioQR: string;
-    costoInscripcion: string;
-    tiempos: Tiempo[];
-  };
 
   const [ajuste, setAjuste] = useState<AjusteDraft>({
     caracteristicas: {
@@ -77,17 +94,32 @@ export const PaginaCrearEventoAdminEventos: React.FC = () => {
     },
   });
 
+
+  const handleCancel = () => {
+    if (exiting) return;
+    setExiting(true);
+  };
+
   return (
-    // 🔵 FONDO AZUL – ocupa toda la pantalla
-    // Fondo y contenedor del wizard (scroll dentro del wrapper)
-    <div className="h-full bg-gradient-to-b from-[#192D69] to-[#6581D6] px-1 md:px-1 py-1 md:py-1 overflow-hidden">
-      {/* 🟦 CONTENEDOR BLANCO – adaptado al viewport, centrado horizontalmente */}
-      <div className="h-[99%]  w-[99%] mx-auto bg-white rounded-[32px] shadow-2xl flex overflow-hidden">
-        {/* Aside con pasos del flujo */}
-        <AsidePasosCrearEvento pasoActual={pasoActual} />
-        {/* Renderiza el contenido del paso actual mediante rutas hijas */}
-        <Outlet context={{ ajuste, setAjuste, participantes, setParticipantes }} />
-      </div>
-    </div>
+    <motion.div
+      className="h-full bg-gradient-to-b from-[#192D69] to-[#6581D6] px-1 md:px-1 py-1 md:py-1 overflow-hidden"
+      initial={slideIn ? { x: -60, opacity: 0, scale: 0.98 } : {}}
+      animate={exiting ? { x: 80, opacity: 0, scale: 0.98 } : { x: 0, opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.28, 1] }}
+      onAnimationComplete={() => {
+        if (exiting) navigate("/admin-eventos/lista", { state: { animateUp: true } });
+      }}
+    >
+      <motion.div
+        className="h-[99%]  w-[99%] mx-auto bg-white rounded-[32px] shadow-2xl flex overflow-hidden"
+        initial={slideIn ? { x: -30, opacity: 0 } : {}}
+        animate={exiting ? { x: 40, opacity: 0.02 } : { x: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 190, damping: 20, mass: 0.6 }}
+      >
+        <AsidePasosCrearEvento pasoActual={pasoActual} onCancel={handleCancel} />
+        
+        <Outlet context={{ ajuste, setAjuste, participantes, setParticipantes, onCancel: handleCancel } satisfies CrearEventoOutletContext} />
+      </motion.div>
+    </motion.div>
   );
 };
