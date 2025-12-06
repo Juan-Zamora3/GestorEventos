@@ -69,7 +69,7 @@ const SeccionAjusteEvento: FC = () => {
               {[
                 { id: "asistencia_qr", titulo: "Tomar asistencia por QR", desc: "Registrar asistencia con código QR." },
                 { id: "confirmacion_pago", titulo: "Confirmación de pago", desc: "Confirmar pagos de participación/entrada." },
-                { id: "envio_whatsapp", titulo: "Envio por WhatsApp", desc: "Enviar constancias por WhatsApp." },
+                
                 { id: "envio_correo", titulo: "Envio por correo", desc: "Enviar constancias por correo." },
                 { id: "asistencia_tiempos", titulo: "Tomar asistencia en tiempos", desc: "Gestionar tiempos de entrada/salida." },
               ].map((opt) => {

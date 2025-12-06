@@ -29,7 +29,6 @@ const SeccionPlantillasDesenglose: FC = () => {
   const [items, setItems] = useState<PlantillaItem[]>(mockPlantillas);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<PlantillaItem | undefined>(undefined);
-  const [vCard] = useState<number>(() => Date.now());
 
   const filtrados = useMemo(() => {
     const term = query.trim().toLowerCase();
