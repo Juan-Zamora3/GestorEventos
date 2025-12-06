@@ -124,7 +124,7 @@ const NavbarEvento: FC<Props> = ({ titulo }) => {
         </div>
 
         {/* navbar */}
-        <nav className="mt-6 px-6 sm:px-10 pb-8">
+        <nav className="mt-10 px-6 sm:px-10 pb-0">
   <div
     ref={navRef}
     className="relative w-full bg-[#E5E9F6] rounded-2xl px-6 py-4"

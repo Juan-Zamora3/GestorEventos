@@ -1,13 +1,44 @@
 import type { FC } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SeccionInformacionDesenglose: FC = () => {
+  const [openDelete, setOpenDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [descripcion, setDescripcion] = useState(
+    "El Concurso de Robótica es un evento académico donde estudiantes compiten diseñando, construyendo y programando robots para superar retos técnicos."
+  );
+  const [fechaInicioEvento, setFechaInicioEvento] = useState("16/12/2024");
+  const [fechaFinEvento, setFechaFinEvento] = useState("17/12/2024");
+  const [fechaInicioInscripciones, setFechaInicioInscripciones] = useState("08/12/2024");
+  const [fechaFinInscripciones, setFechaFinInscripciones] = useState("15/12/2024");
+  const navigate = useNavigate();
+
+  const handleConfirmDelete = () => {
+    const ok = window.confirm("¿Estás seguro de que deseas eliminar este evento?");
+    if (!ok) return;
+    navigate("/admin-eventos/lista");
+  };
+
   return (
     <section className="px-6 sm:px-10 py-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-slate-900">Concurso de robotica junior</h2>
         <div className="flex items-center gap-2">
-          <button type="button" className="px-4 py-2 rounded-full border border-slate-200 bg-white text-slate-700 text-xs font-semibold shadow-sm transform-gpu transition hover:bg-slate-50 hover:-translate-y-[1px] hover:scale-[1.02]">Editar</button>
-          <button type="button" className="px-4 py-2 rounded-full bg-rose-600 text-white text-xs font-semibold shadow-sm transform-gpu transition hover:brightness-110 hover:-translate-y-[1px] hover:scale-[1.02]">Eliminar Evento</button>
+          <button
+            type="button"
+            onClick={() => setEditing((v) => !v)}
+            className={`px-4 py-2 rounded-full text-xs font-semibold shadow-sm transform-gpu transition hover:-translate-y-[1px] hover:scale-[1.02] ${editing ? "bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white" : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}
+          >
+            {editing ? "Guardar" : "Editar"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpenDelete(true)}
+            className="px-4 py-2 rounded-full bg-rose-600 text-white text-xs font-semibold shadow-sm transform-gpu transition hover:brightness-110 hover:-translate-y-[1px] hover:scale-[1.02]"
+          >
+            Eliminar Evento
+          </button>
         </div>
       </div>
 
@@ -19,24 +50,81 @@ const SeccionInformacionDesenglose: FC = () => {
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
             <label className="block text-xs font-semibold text-slate-700 mb-1">Descripción<span className="text-red-500">*</span></label>
-            <p className="text-xs text-slate-600">El Concurso de Robótica es un evento académico donde estudiantes compiten diseñando, construyendo y programando robots para superar retos técnicos.</p>
+            {editing ? (
+              <textarea
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                rows={3}
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]"
+              />
+            ) : (
+              <p className="text-xs text-slate-600">{descripcion}</p>
+            )}
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Fecha de Inicio del Evento</label>
-              <input type="text" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]" placeholder="16/12/2024" />
+              {editing ? (
+                <input
+                  type="text"
+                  value={fechaInicioEvento}
+                  onChange={(e) => setFechaInicioEvento(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]"
+                  placeholder="16/12/2024"
+                />
+              ) : (
+                <div className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white text-slate-600">
+                  {fechaInicioEvento}
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Fecha de Finalización del Evento</label>
-              <input type="text" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]" placeholder="17/12/2024" />
+              {editing ? (
+                <input
+                  type="text"
+                  value={fechaFinEvento}
+                  onChange={(e) => setFechaFinEvento(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]"
+                  placeholder="17/12/2024"
+                />
+              ) : (
+                <div className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white text-slate-600">
+                  {fechaFinEvento}
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Fecha de inicio de Inscripciones</label>
-              <input type="text" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]" placeholder="08/12/2024" />
+              {editing ? (
+                <input
+                  type="text"
+                  value={fechaInicioInscripciones}
+                  onChange={(e) => setFechaInicioInscripciones(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]"
+                  placeholder="08/12/2024"
+                />
+              ) : (
+                <div className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white text-slate-600">
+                  {fechaInicioInscripciones}
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Fecha de fin de Inscripciones</label>
-              <input type="text" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]" placeholder="15/12/2024" />
+              {editing ? (
+                <input
+                  type="text"
+                  value={fechaFinInscripciones}
+                  onChange={(e) => setFechaFinInscripciones(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF]"
+                  placeholder="15/12/2024"
+                />
+              ) : (
+                <div className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white text-slate-600">
+                  {fechaFinInscripciones}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -89,6 +177,31 @@ const SeccionInformacionDesenglose: FC = () => {
           </div>
         </div>
       </div>
+      {openDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setOpenDelete(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-[92%] max-w-md p-6">
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">Eliminar evento</h3>
+            <p className="text-sm text-slate-600 mb-6">Esta acción eliminará el evento. ¿Estás seguro de continuar?</p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setOpenDelete(false)}
+                className="px-4 py-2 rounded-full border border-slate-200 bg-white text-slate-700 text-xs font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 rounded-full bg-rose-600 text-white text-xs font-semibold"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
