@@ -24,10 +24,13 @@ interface Props {
 
 /** Construye la URL del PDF para el MODAL con zoom fijo y sin UI */
 const buildPdfSrc = (pdfUrl?: string) => {
-  const base = pdfUrl && pdfUrl.trim() !== "" ? pdfUrl : "/Hackatec2.pdf";
+  const base =
+    pdfUrl && pdfUrl.trim() !== "" ? pdfUrl : "/Hackatec2.pdf";
+
   const v = Date.now();
-  // Cache-buster y contexto ANTES del hash para forzar instancia única del visor
-  return `${base}?ctx=modal&v=${v}#page=1&zoom=page-fit&toolbar=0&navpanes=0`;
+  const zoom = "60"; // ajusta 100–130 según qué tan grande quieras verlo
+
+  return `${base}?ctx=modal&v=${v}#page=1&zoom=${zoom}`;
 };
 
 const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
@@ -450,7 +453,7 @@ const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
             <div className="border rounded-xl bg-[#F9FAFF] h-full flex items-center justify-center p-4">
               <div
                 ref={previewRef}
-                className="relative w-full max-w-[820px] aspect-[210/297] rounded-xl bg-white shadow overflow-hidden"
+                className="relative w-full max-w-[860px] h-[720px] rounded-xl bg-white shadow overflow-hidden"
                 onMouseMove={handlePreviewMouseMove}
                 onMouseUp={handleStopDrag}
                 onMouseLeave={handleStopDrag}

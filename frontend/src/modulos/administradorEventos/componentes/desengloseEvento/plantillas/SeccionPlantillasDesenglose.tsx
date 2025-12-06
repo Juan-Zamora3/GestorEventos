@@ -29,6 +29,7 @@ const SeccionPlantillasDesenglose: FC = () => {
   const [items, setItems] = useState<PlantillaItem[]>(mockPlantillas);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<PlantillaItem | undefined>(undefined);
+  const [vCard] = useState<number>(() => Date.now());
 
   const filtrados = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -60,11 +61,21 @@ const SeccionPlantillasDesenglose: FC = () => {
 
   const abrirEdicion = (item: PlantillaItem) => { setEditing(item); };
 
-  const buildPdfSrc = (urlBase: string | undefined, scope: "card" | "modal") => {
-    const base = urlBase && urlBase.trim() !== "" ? urlBase : "/Hackatec2.pdf";
-    const zoom = scope === "modal" ? "page-fit" : "page-width";
-    return `${base}?ctx=${scope}#page=1&zoom=${zoom}&toolbar=0&navpanes=0`;
-  };
+  // arriba del componente
+const buildPdfSrc = (
+  urlBase: string | undefined,
+  scope: "card" | "modal" = "card",
+) => {
+  const base =
+    urlBase && urlBase.trim() !== "" ? urlBase : "/Hackatec2.pdf";
+
+  // 👇 cambiamos zoom según contexto
+  const zoom = scope === "modal" ? "60" : "20";
+
+  // 👇 ctx + v hacen que el navegador considere cada vista como documento distinto
+  const v = Date.now();
+  return `${base}?ctx=${scope}&v=${v}#page=1&zoom=${zoom}`;
+};
 
 
   return (
