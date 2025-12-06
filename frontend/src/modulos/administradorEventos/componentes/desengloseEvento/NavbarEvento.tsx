@@ -110,7 +110,9 @@ const NavbarEvento: FC<Props> = ({ titulo }) => {
             <div className="flex items-center">
               <button
                 type="button"
-                onClick={() => navigate("/admin-eventos/lista")}
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("admin-eventos:salir"));
+                }}
                 className="h-9 w-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transform-gpu transition hover:scale-105"
               >
                 <FiChevronLeft />

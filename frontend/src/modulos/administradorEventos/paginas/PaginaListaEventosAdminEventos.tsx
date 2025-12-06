@@ -50,6 +50,7 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
   const [animDown, setAnimDown] = useState(false);
   const [query, setQuery] = useState<string>("");
   const [eventos] = useState<EventoCardAdminEventos[]>(eventosMock);
+  const [exitingToDetalle, setExitingToDetalle] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,6 +76,13 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
     setAnimDown(true); // baja el cuadro gris
     window.setTimeout(() => {
       navigate("/admin-eventos/plantillas", { state: { fromLista: true } });
+    }, 650);
+  };
+
+  const irDetalleConTransicion = (id: string) => {
+    setExitingToDetalle(true);
+    window.setTimeout(() => {
+      navigate(`/admin-eventos/evento/${id}`);
     }, 650);
   };
 
@@ -121,6 +129,8 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
   className={`flex-1 min-h-0 transform-gpu transition-all ${
     animDown
       ? "duration-700 ease-in-out translate-y-full opacity-0"
+      : exitingToDetalle
+      ? "duration-700 ease-in-out -translate-y-full opacity-0"
       : showList
       ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100"
       : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"
@@ -179,6 +189,7 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
               <GridEventosAdminEventos
                 eventos={eventosFiltrados}
                 stagger={initialAnimateUp}
+                onEventoClick={irDetalleConTransicion}
               />
               {eventosFiltrados.length === 0 && (
                 <p className="mt-6 text-center text-sm text-slate-500">

@@ -6,9 +6,10 @@ import type { EventoCardAdminEventos } from "../tiposAdminEventos";
 interface Props {
   eventos: EventoCardAdminEventos[];
   stagger?: boolean;
+  onEventoClick?: (id: string) => void;
 }
 
-const GridEventosAdminEventos: React.FC<Props> = ({ eventos, stagger = false }) => {
+const GridEventosAdminEventos: React.FC<Props> = ({ eventos, stagger = false, onEventoClick }) => {
   const navigate = useNavigate();
   const [entered, setEntered] = React.useState<boolean>(!stagger);
   React.useEffect(() => {
@@ -24,7 +25,7 @@ const GridEventosAdminEventos: React.FC<Props> = ({ eventos, stagger = false }) 
           key={evento.id}
           className={`bg-white rounded-3xl overflow-hidden transition cursor-pointer relative transform-gpu transition-all duration-700 ${stagger ? (entered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8") : ""}`}
           style={{ aspectRatio: "4 / 3", ...(stagger ? { transitionDelay: `${idx * 120}ms` } : {}) }}
-          onClick={() => navigate(`/admin-eventos/evento/${evento.id}`)}
+          onClick={() => (onEventoClick ? onEventoClick(evento.id) : navigate(`/admin-eventos/evento/${evento.id}`))}
         >
           <div className="absolute inset-0 flex flex-col">
             <div className="flex-[2] basis-2/3 w-full overflow-hidden">
