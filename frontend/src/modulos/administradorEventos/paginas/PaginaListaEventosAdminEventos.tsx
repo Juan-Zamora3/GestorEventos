@@ -1,13 +1,14 @@
 // src/modulos/administradorEventos/paginas/PaginaListaEventosAdminEventos.tsx
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FiSearch,
   FiChevronDown,
   FiGrid,
   FiList,
   FiArrowDown,
+  FiArrowUp,
 } from "react-icons/fi";
 import FilaPlantillasRapidas from "../componentes/IncioEvento/FilaPlantillasRapidas";
 import GridEventosAdminEventos from "../componentes/IncioEvento/GridEventosAdminEventos";
@@ -51,6 +52,7 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
   const [query, setQuery] = useState<string>("");
   const [eventos] = useState<EventoCardAdminEventos[]>(eventosMock);
   const [exitingToDetalle, setExitingToDetalle] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -110,37 +112,46 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
 
   return (
     <motion.div className="h-full flex flex-col" initial={initialAnimateUp ? { y: 24, opacity: 0, scale: 0.98 } : {}} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.28, 1] }}>
-      {/* ZONA AZUL — título + plantillas */}
-      <section className="bg-transparent px-14 pt-2 pb-2 text-white">
-        <div className={`transform-gpu transition-all ${
-          exitingToDetalle
-            ? "duration-700 ease-in-out -translate-y-16 opacity-0"
-            : "duration-[900ms] ease-in-out translate-y-0 opacity-100"
-        }`}>
-          <h1 className="text-2xl font-bold mb-6">Crear Evento</h1>
-          <div className="flex justify-center w-full">
-            <FilaPlantillasRapidas
-              size="normal"
-              onMasClick={irGaleriaConTransicion}
-              hideMas={animDown} // 👈 se oculta “Más plantillas” al bajar
-            />
-          </div>
-        </div>
-      </section>
+      {/* ZONA AZUL — título + plantillas con animación de salida */}
+      <AnimatePresence mode="wait">
+        {!expanded && (
+          <motion.section
+            className="bg-transparent px-14 pt-2 pb-2 text-white"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.28, 1] }}
+            style={{ overflow: "hidden" }}
+          >
+            <div className="transform-gpu duration-[900ms] ease-in-out translate-y-0 opacity-100">
+              <h1 className="text-2xl font-bold mb-6">Crear Evento</h1>
+              <div className="flex justify-center w-full">
+                <FilaPlantillasRapidas
+                  size="normal"
+                  onMasClick={irGaleriaConTransicion}
+                  hideMas={animDown}
+                />
+              </div>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
 
       {/* PANEL GRIS con buscador + grid */}
-    <div
-  className={`flex-1 min-h-0 transform-gpu transition-all ${
-    animDown
-      ? "duration-700 ease-in-out translate-y-full opacity-0"
-      : exitingToDetalle
-      ? "duration-700 ease-in-out -translate-y-full opacity-0"
-      : showList
-      ? "duration-[1100ms] ease-in-out translate-y-0 opacity-100"
-      : "duration-[1100ms] ease-in-out translate-y-16 opacity-0"
-  }`}
->
-        <div className="h-full bg-[#EEF0F7] rounded-t-none flex flex-col">
+    <motion.div
+      layout
+      transition={{ layout: { duration: 0.7, ease: [0.22, 1, 0.28, 1] } }}
+      className={`flex-1 min-h-0 transform-gpu ${
+        animDown
+          ? "opacity-0"
+          : exitingToDetalle
+          ? "opacity-0"
+          : showList || expanded
+          ? "opacity-100"
+          : "opacity-0"
+      }`}
+    >
+        <div className={`h-full bg-[#EEF0F7] ${expanded ? "rounded-t-3xl" : "rounded-t-none"} flex flex-col`}>
           <section className="px-14 pt-5">
             <div className="bg-white w-full rounded-full px-6 py-3 shadow-sm flex items-center gap-4">
               {/* Buscador */}
@@ -181,8 +192,13 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
                 <button className="h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
                   <FiList />
                 </button>
-                <button className="h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-500">
-                  <FiArrowDown />
+                <button
+                  type="button"
+                  onClick={() => setExpanded((prev) => !prev)}
+                  className="h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 border border-slate-300"
+                  aria-label={expanded ? "Contraer" : "Expandir"}
+                >
+                  {expanded ? <FiArrowDown /> : <FiArrowUp />}
                 </button>
               </div>
             </div>
@@ -203,8 +219,8 @@ export const PaginaListaEventosAdminEventos: React.FC = () => {
             </div>
           </section>
         </div>
-      </div>
     </motion.div>
+  </motion.div>
   );
 };
 
