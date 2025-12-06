@@ -124,12 +124,12 @@ const NavbarEvento: FC<Props> = ({ titulo }) => {
         </div>
 
         {/* navbar */}
-        <nav className="mt-5 px-6 sm:px-10 pb-5">
-          <div
-            ref={navRef}
-            className="relative w-full bg-[#E5E9F6] rounded-md px-2 py-1"
-          >
-            <ul className="flex items-center justify-center gap-8 text-sm text-[#5A5F8D]">
+        <nav className="mt-6 px-6 sm:px-10 pb-8">
+  <div
+    ref={navRef}
+    className="relative w-full bg-[#E5E9F6] rounded-2xl px-6 py-4"
+  >
+    <ul className="flex items-center justify-center gap-8 text-sm text-[#5A5F8D]">
               {tabs.map((t) => {
                 const selected = activo === t.id;
                 return (
