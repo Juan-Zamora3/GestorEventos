@@ -66,6 +66,7 @@ const labelTipo = (t: TipoCampo) => {
 const SeccionFormulario: FC = () => {
   const navigate = useNavigate();
   const { participantes } = useOutletContext<{ participantes: ParticipantesDraft }>();
+  const { setSlideDir } = useOutletContext<{ setSlideDir: (d: "next" | "prev") => void }>();
   const modo = participantes.modo;
   const [preguntas, setPreguntas] = useState<PreguntaForm[]>(() => [...BASE_PREGUNTAS]);
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | undefined>(undefined);
@@ -189,7 +190,7 @@ const SeccionFormulario: FC = () => {
         </div>
       </div>
 
-      <FooterAdminEventos onBack={() => navigate("../ajuste")} step={{ current: 5, total: 5 }} nextLabel="Finalizar" />
+      <FooterAdminEventos onBack={() => { setSlideDir("prev"); navigate("../ajuste"); }} step={{ current: 5, total: 5 }} nextLabel="Finalizar" />
 
       <ModalPreguntaFormulario
         abierto={modalAbierto}

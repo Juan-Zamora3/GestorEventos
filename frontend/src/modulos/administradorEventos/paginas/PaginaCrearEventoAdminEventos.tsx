@@ -3,7 +3,7 @@
 // Notas: layout del wizard de creación; renderiza Aside + Outlet de pasos.
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import type { CampoEvento, ParticipantesDraft } from "../componentes/tiposAdminEventos";
 import AsidePasosCrearEvento from "../componentes/creacionEvento/AsidePasosCrearEvento";
 
@@ -21,6 +21,7 @@ export type CrearEventoOutletContext = {
   participantes: ParticipantesDraft;
   setParticipantes: (p: ParticipantesDraft) => void;
   onCancel: () => void;
+  setSlideDir: (d: "next" | "prev") => void;
 };
 
 export const PaginaCrearEventoAdminEventos: React.FC = () => {
@@ -30,6 +31,7 @@ export const PaginaCrearEventoAdminEventos: React.FC = () => {
   type NavState = { slideIn?: boolean; plantillaId?: string } | null;
   const slideIn = Boolean((location.state as NavState)?.slideIn);
   const [exiting, setExiting] = useState(false);
+  const [slideDir, setSlideDir] = useState<"next" | "prev">("next");
   // reservado por si queremos debouncing o cancelar animaciones futuras
   const exitTimer = useRef<number | undefined>(undefined);
   void exitTimer;
@@ -117,8 +119,20 @@ export const PaginaCrearEventoAdminEventos: React.FC = () => {
         transition={{ type: "spring", stiffness: 190, damping: 20, mass: 0.6 }}
       >
         <AsidePasosCrearEvento pasoActual={pasoActual} onCancel={handleCancel} />
-        
-        <Outlet context={{ ajuste, setAjuste, participantes, setParticipantes, onCancel: handleCancel } satisfies CrearEventoOutletContext} />
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pasoActual}
+              initial={{ x: slideDir === "next" ? -40 : 40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: slideDir === "next" ? 40 : -40, opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.28, 1] }}
+              className="h-full"
+            >
+              <Outlet context={{ ajuste, setAjuste, participantes, setParticipantes, onCancel: handleCancel, setSlideDir } satisfies CrearEventoOutletContext} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </motion.div>
     </motion.div>
   );

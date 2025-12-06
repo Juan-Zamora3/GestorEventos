@@ -13,7 +13,7 @@ import FooterAdminEventos from "../../comunes/FooterAdminEventos";
 
 const SeccionIntegrantes: FC = () => {
   const navigate = useNavigate();
-  const { participantes, setParticipantes } = useOutletContext<{ participantes: ParticipantesDraft; setParticipantes: React.Dispatch<React.SetStateAction<ParticipantesDraft>> }>();
+  const { participantes, setParticipantes, setSlideDir } = useOutletContext<{ participantes: ParticipantesDraft; setParticipantes: React.Dispatch<React.SetStateAction<ParticipantesDraft>>; setSlideDir: (d: "next" | "prev") => void }>();
   // Estado de modalidad: individual o por equipos
   const modo = participantes.modo;
   // Cupos para individual
@@ -254,7 +254,7 @@ const SeccionIntegrantes: FC = () => {
         </div>
         </div>
       </div>
-      <FooterAdminEventos onBack={() => navigate("../personal")} onNext={() => navigate("../ajuste")} step={{ current: 3, total: 5 }} />
+      <FooterAdminEventos onBack={() => { setSlideDir("prev"); navigate("../personal"); }} onNext={() => { setSlideDir("next"); navigate("../ajuste"); }} step={{ current: 3, total: 5 }} />
 
       {/* Modales */}
       <ModalCampoEvento key={`${modalCampoModo}-${campoEditando?.id ?? 'nuevo'}`} abierto={modalCampoAbierto} modo={modalCampoModo} campo={campoEditando} onGuardar={manejarGuardarCampo} onEliminar={manejarEliminarCampo} onCerrar={cerrarModalCampo} />

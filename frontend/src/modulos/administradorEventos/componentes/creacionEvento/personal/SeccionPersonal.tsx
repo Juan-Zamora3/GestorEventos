@@ -2,7 +2,7 @@
 // Gestiona roles del evento, selección única, campos por rol y modales de CRUD.
 import { useState } from "react";
 import type { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import FooterAdminEventos from "../../comunes/FooterAdminEventos";
 import ModalRolPersonal from "./ModalRolPersonal";
 import ModalCampoEvento from "../ModalCampoEvento";
@@ -24,6 +24,7 @@ const rolesIniciales: RolUI[] = [
 
 const SeccionPersonal: FC = () => {
   const navigate = useNavigate();
+  const { setSlideDir } = useOutletContext<{ setSlideDir: (d: "next" | "prev") => void }>();
   // Estado de roles y selección actual
   const [roles, setRoles] = useState<RolUI[]>(rolesIniciales);
   const [selectedRoleId, setSelectedRoleId] = useState<string | undefined>(
@@ -78,7 +79,7 @@ const SeccionPersonal: FC = () => {
       setCamposPorRol((prev) => ({ ...prev, [nuevo.id]: [...baseCampos] }));
     } else if (modalModo === "editar" && rolEditando) {
       setRoles((prev) => prev.map((r) => (r.id === rolEditando.id ? { ...r, nombre: data.nombre, descripcion: data.descripcion } : r)));
-    }
+}
     setModalAbierto(false);
   };
   // Elimina rol
@@ -183,7 +184,7 @@ const SeccionPersonal: FC = () => {
         )}
       </div>
       </div>
-      <FooterAdminEventos onBack={() => navigate("../informacion")} onNext={() => navigate("../integrantes")} step={{ current: 2, total: 5 }} />
+      <FooterAdminEventos onBack={() => { setSlideDir("prev"); navigate("../informacion"); }} onNext={() => { setSlideDir("next"); navigate("../integrantes"); }} step={{ current: 2, total: 5 }} />
 
       <ModalRolPersonal key={`${modalModo}-${rolEditando?.id ?? 'nuevo'}`} abierto={modalAbierto} modo={modalModo} rol={rolEditando} onGuardar={manejarGuardar} onEliminar={manejarEliminar} onCerrar={cerrarModal} />
       <ModalCampoEvento key={`${modalCampoModo}-${campoEditando?.id ?? 'nuevo'}`} abierto={modalCampoAbierto} modo={modalCampoModo} campo={campoEditando} onGuardar={manejarGuardarCampo} onEliminar={manejarEliminarCampo} onCerrar={cerrarModalCampo} />

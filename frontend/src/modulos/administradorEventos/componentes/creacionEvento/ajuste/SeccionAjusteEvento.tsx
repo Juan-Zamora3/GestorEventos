@@ -18,6 +18,7 @@ const SeccionAjusteEvento: FC = () => {
     tiempos: Tiempo[];
   };
   const { ajuste, setAjuste } = useOutletContext<{ ajuste: AjusteDraft; setAjuste: Dispatch<SetStateAction<AjusteDraft>> }>();
+  const { setSlideDir } = useOutletContext<{ setSlideDir: (d: "next" | "prev") => void }>();
   const caracteristicas = ajuste.caracteristicas;
   const toggleCar = (id: keyof typeof caracteristicas) =>
     setAjuste((prev) => ({
@@ -143,7 +144,7 @@ const SeccionAjusteEvento: FC = () => {
           </div>
         </div>
       </div>
-      <FooterAdminEventos onBack={() => navigate("../integrantes")} onNext={() => navigate("../formulario")} step={{ current: 4, total: 5 }} />
+      <FooterAdminEventos onBack={() => { setSlideDir("prev"); navigate("../integrantes"); }} onNext={() => { setSlideDir("next"); navigate("../formulario"); }} step={{ current: 4, total: 5 }} />
 
       {/* Modal de tiempos */}
       <ModalTiempoEvento
