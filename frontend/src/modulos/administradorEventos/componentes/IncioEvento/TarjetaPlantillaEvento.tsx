@@ -21,9 +21,9 @@ const TarjetaPlantillaEvento: React.FC<Props> = ({ plantilla, onClick, size = "n
       className={`
         ${sizeClasses}
         rounded-xl
-        overflow-hidden
+        overflow-visible
         bg-white
-        ring-2 ring-white
+        ring-2 ring-white hover:ring-4 hover:ring-white/90
         transform-gpu transition-all duration-300 hover:scale-[1.05] hover:shadow-xl
         relative flex
         snap-start
@@ -33,7 +33,7 @@ const TarjetaPlantillaEvento: React.FC<Props> = ({ plantilla, onClick, size = "n
       <img
         src={plantilla.imagen}
         alt={plantilla.titulo}
-        className="w-full h-full object-cover block"
+        className="w-full h-full object-cover block rounded-xl"
       />
       <div className="absolute top-2 left-2 right-2">
         <span className="text-white text-[24px] font-bold drop-shadow">

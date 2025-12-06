@@ -14,10 +14,10 @@ const plantillas: PlantillaEvento[] = [
 interface Props {
   size?: "normal" | "large";
   onMasClick?: () => void;
-  hideMas?: boolean;        // 👈 NUEVO
+  hideMas?: boolean;
 }
 
-const FilaPlantillasRapidas: React.FC<Props> = ({ size = "normal", onMasClick }) => {
+const FilaPlantillasRapidas: React.FC<Props> = ({ size = "normal", onMasClick, hideMas = false }) => {
   const navigate = useNavigate();
 
   const manejarClickPlantilla = (id: string) => {
@@ -38,9 +38,13 @@ const FilaPlantillasRapidas: React.FC<Props> = ({ size = "normal", onMasClick })
   };
 
   return (
-    <div className="w-full overflow-x-auto snap-x snap-mandatory">
-      <div className="min-w-max flex items-center justify-space-between gap-8">
-        {plantillas.map((plantilla) => (
+    <div className="w-full overflow-x-auto snap-x snap-mandatory no-scrollbar">
+      <div className="min-w-max flex items-center justify-between gap-8 py-2">
+        {(
+          hideMas
+            ? plantillas.filter((p) => p.id !== "mas")
+            : plantillas
+        ).map((plantilla) => (
           <TarjetaPlantillaEvento
             key={plantilla.id}
             plantilla={plantilla}
