@@ -9,6 +9,7 @@ export const LayoutAdminGeneral: React.FC = () => {
   const location = useLocation();
 
   const path = location.pathname;
+  const isEvento = path.startsWith("/admin-general/auditoria/");
   let tabActiva: TabAdmin = "auditoria";
 
   if (path.includes("/usuarios")) tabActiva = "usuarios";
@@ -23,52 +24,53 @@ export const LayoutAdminGeneral: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#EFF3FB] flex flex-col">
-      {/* BARRA SUPERIOR */}
-      <header
-        className="w-full text-white px-8 py-3 flex items-center justify-between shadow-md"
-        style={{
-          background:
-            "linear-gradient(90deg, #192D69 0%, #6581D6 100%)", // 🎨 colores de tu captura
-        }}
-      >
-      <img
-  src={logoTecnm}
-  alt="TECNOLÓGICO NACIONAL DE MÉXICO"
-  className="h-10 w-auto"
-/>
+      {/* BARRA SUPERIOR (oculta en desenglose de evento) */}
+      {!isEvento && (
+        <header
+          className="w-full text-white px-8 py-3 flex items-center justify-between shadow-md"
+          style={{
+            background:
+              "linear-gradient(90deg, #192D69 0%, #6581D6 100%)",
+          }}
+        >
+          <img
+            src={logoTecnm}
+            alt="TECNOLÓGICO NACIONAL DE MÉXICO"
+            className="h-10 w-auto"
+          />
 
+          {/* Tabs */}
+          <nav className="flex items-center gap-4">
+            <Link to="auditoria" className={getClaseTab("auditoria")}>
+              Auditoría
+            </Link>
+            <Link to="usuarios" className={getClaseTab("usuarios")}>
+              Usuarios
+            </Link>
+            <Link to="historial" className={getClaseTab("historial")}>
+              Historial
+            </Link>
+          </nav>
 
-        {/* Tabs */}
-        <nav className="flex items-center gap-4">
-          <Link to="auditoria" className={getClaseTab("auditoria")}>
-            Auditoría
-          </Link>
-          <Link to="usuarios" className={getClaseTab("usuarios")}>
-            Usuarios
-          </Link>
-          <Link to="historial" className={getClaseTab("historial")}>
-            Historial
-          </Link>
-        </nav>
-
-        {/* Usuario mock */}
-        <div className="flex items-center gap-3">
-          <div className="text-right hidden sm:block">
-            <p className="text-xs font-semibold leading-tight">
-              Juan Enrique Zamora German
-            </p>
-            <p className="text-[11px] opacity-80 leading-tight">
-              juannikki1232@gmail.com
-            </p>
+          {/* Usuario mock */}
+          <div className="flex items-center gap-3">
+            <div className="text-right hidden sm:block">
+              <p className="text-xs font-semibold leading-tight">
+                Juan Enrique Zamora German
+              </p>
+              <p className="text-[11px] opacity-80 leading-tight">
+                juannikki1232@gmail.com
+              </p>
+            </div>
+            <div className="h-10 w-10 rounded-full bg-white/90 overflow-hidden flex items-center justify-center">
+              <span className="text-sm font-bold text-[#192D69]">JZ</span>
+            </div>
           </div>
-          <div className="h-10 w-10 rounded-full bg-white/90 overflow-hidden flex items-center justify-center">
-            <span className="text-sm font-bold text-[#192D69]">JZ</span>
-          </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* AQUÍ VAN LAS PÁGINAS HIJAS */}
-      <main className="flex-1 px-8 py-6">
+      <main className={isEvento ? "flex-1 min-h-0 overflow-y-auto px-0 py-0" : "flex-1 px-8 py-6"}>
         <Outlet />
       </main>
     </div>

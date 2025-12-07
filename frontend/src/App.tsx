@@ -8,6 +8,15 @@ import { LayoutAdminGeneral } from "./modulos/administradorGeneral/paginas/Layou
 import { PaginaAuditoriaAdminGeneral } from "./modulos/administradorGeneral/paginas/PaginaAuditoriaAdminGeneral";
 import { PaginaUsuariosAdminGeneral } from "./modulos/administradorGeneral/paginas/PaginaUsuariosAdminGeneral";
 import { PaginaHistorialAdminGeneral } from "./modulos/administradorGeneral/paginas/PaginaHistorialAdminGeneral";
+import PaginaDesengloseEventoAdminGeneral from "./modulos/administradorGeneral/paginas/PaginaDesengloseEventoAdminGeneral";
+import SeccionInformacionDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/informacion/SeccionInformacionDesenglose";
+import SeccionEquiposDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/equipos/SeccionEquiposDesenglose";
+import SeccionParticipantesDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/participantes/SeccionParticipantesDesenglose";
+import SeccionPersonalDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/personal/SeccionPersonalDesenglose";
+import SeccionAsistenciasDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/asistencias/SeccionAsistenciasDesenglose";
+import SeccionPlantillasDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/plantillas/SeccionPlantillasDesenglose";
+import SeccionConstanciasDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/constancias/SeccionConstanciasDesenglose";
+import SeccionFormularioDesengloseAdminGeneral from "./modulos/administradorGeneral/componentes/desengloseEvento/formulario/SeccionFormularioDesenglose";
 
 /* ========== ADMIN EVENTOS ========== */
 import LayoutAdminEventos from "./modulos/administradorEventos/paginas/LayoutAdminEventos";
@@ -46,6 +55,17 @@ function App() {
       <Route path="/admin-general" element={<LayoutAdminGeneral />}>
         <Route index element={<Navigate to="auditoria" replace />} />
         <Route path="auditoria" element={<PaginaAuditoriaAdminGeneral />} />
+        <Route path="auditoria/:id" element={<PaginaDesengloseEventoAdminGeneral />}>
+          <Route index element={<SeccionInformacionDesengloseAdminGeneral />} />
+          <Route path="informacion" element={<SeccionInformacionDesengloseAdminGeneral />} />
+          <Route path="equipos" element={<SeccionEquiposDesengloseAdminGeneral />} />
+          <Route path="participantes" element={<SeccionParticipantesDesengloseAdminGeneral />} />
+          <Route path="personal" element={<SeccionPersonalDesengloseAdminGeneral />} />
+          <Route path="asistencias" element={<SeccionAsistenciasDesengloseAdminGeneral />} />
+          <Route path="plantillas" element={<SeccionPlantillasDesengloseAdminGeneral />} />
+          <Route path="constancias" element={<SeccionConstanciasDesengloseAdminGeneral />} />
+          <Route path="formulario" element={<SeccionFormularioDesengloseAdminGeneral />} />
+        </Route>
         <Route path="usuarios" element={<PaginaUsuariosAdminGeneral />} />
         <Route path="historial" element={<PaginaHistorialAdminGeneral />} />
       </Route>

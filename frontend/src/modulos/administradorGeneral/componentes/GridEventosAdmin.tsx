@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import type { EventoCard } from "./tiposAdminGeneral.ts";
 
 
@@ -7,12 +8,14 @@ interface Props {
 }
 
 const GridEventosAdmin: React.FC<Props> = ({ eventos }) => {
+  const navigate = useNavigate();
   return (
     <section className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {eventos.map((evento) => (
         <article
           key={evento.id}
           className="bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col"
+          onClick={() => navigate(`/admin-general/auditoria/${evento.id}`, { state: { evento } })}
         >
           <div className="h-36 w-full overflow-hidden">
             <img
