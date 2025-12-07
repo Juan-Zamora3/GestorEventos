@@ -51,11 +51,10 @@ export const PaginaCrearEventoAdminEventos: React.FC = () => {
     caracteristicas: {
       asistencia_qr: true,
       confirmacion_pago: false,
-      envio_whatsapp: false,
       envio_correo: true,
       asistencia_tiempos: false,
     },
-    envioQR: "whatsapp",
+    envioQR: "correo",
     costoInscripcion: "",
     tiempos: [],
   });

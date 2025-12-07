@@ -51,7 +51,19 @@ const SeccionParticipantesDesenglose: React.FC = () => {
   };
 
   const seleccionarTodo = () => {
-    setSeleccionados(new Set(filtrados.map((r) => r.codigo)));
+    setSeleccionados((prev) => {
+      const s = new Set(prev);
+      filtrados.forEach((r) => s.add(r.codigo));
+      return s;
+    });
+  };
+
+  const deseleccionarFiltrados = () => {
+    setSeleccionados((prev) => {
+      const s = new Set(prev);
+      filtrados.forEach((r) => s.delete(r.codigo));
+      return s;
+    });
   };
 
   const limpiarSeleccion = () => {
@@ -143,8 +155,8 @@ const SeccionParticipantesDesenglose: React.FC = () => {
                   {seleccionMode && (<th className="px-4 py-3 text-left w-10">
                     <input
                       type="checkbox"
-                      checked={seleccionados.size === filtrados.length && filtrados.length>0}
-                      onChange={(e)=> { if (e.target.checked) seleccionarTodo(); else limpiarSeleccion(); }}
+                      checked={filtrados.length > 0 && filtrados.every((r) => seleccionados.has(r.codigo))}
+                      onChange={(e)=> { if (e.target.checked) seleccionarTodo(); else deseleccionarFiltrados(); }}
                       className="h-4 w-4 accent-[#5B4AE5]"
                     />
                   </th>)}

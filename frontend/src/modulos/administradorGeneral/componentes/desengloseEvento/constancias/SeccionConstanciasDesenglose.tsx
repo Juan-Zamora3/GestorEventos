@@ -6,7 +6,6 @@ import {
   FiChevronRight,
   FiDownload,
   FiPrinter,
-  FiEye,
   FiSend,
   FiClock,
 } from "react-icons/fi";
@@ -63,6 +62,7 @@ const SeccionConstanciasDesenglose: FC = () => {
   const [openEnviar, setOpenEnviar] = useState(false);
   const [openHistorial, setOpenHistorial] = useState(false);
   const [openImprimir, setOpenImprimir] = useState(false);
+   const [archivoUrl] = useState<string | undefined>(undefined);
 
   const actual = useMemo(
     () => categorias.find((c) => c.id === catId)!,
@@ -126,10 +126,19 @@ const SeccionConstanciasDesenglose: FC = () => {
     if (total) setIndex((i) => (i + 1) % total);
   };
 
+  const buildPdfSrc = (pdfUrl?: string) => {
+  const base =
+    pdfUrl && pdfUrl.trim() !== "" ? pdfUrl : "/Hackatec2.pdf";
+
+  
+  const zoom = "60"; // ajusta 100–130 según qué tan grande quieras verlo
+
+  return `${base}#page=1&zoom=${zoom}`;
+};
   // === PLANTILLA PARA PREVIEW / ENVÍO ===
   // Por ahora está fija, cámbiala luego por la URL guardada en BD
-  const PLANTILLA_PDF_URL = "/Hackatec2.pdf";
-  const pdfSrc = `${PLANTILLA_PDF_URL}?ctx=constancias#page=1&zoom=page-width&toolbar=0&navpanes=0`;
+ const basePdfUrl = archivoUrl; // en el futuro puedes usar item.imagen si viene un PDF
+  const pdfSrc = buildPdfSrc(basePdfUrl);
 
 
   // misma idea que antes para generar imagen rápida
@@ -166,11 +175,7 @@ const SeccionConstanciasDesenglose: FC = () => {
     a.click();
   };
 
-  const ver = () => {
-    if (!personaActual) return;
-    const url = generarImagen(personaActual.nombre);
-    window.open(url, "_blank");
-  };
+ 
 
   const imprimir = () => {
     setOpenImprimir(true);
@@ -187,13 +192,7 @@ const SeccionConstanciasDesenglose: FC = () => {
           >
             <FiPrinter /> Imprimir
           </button>
-          <button
-            type="button"
-            onClick={ver}
-            className="px-5 py-2.5 rounded-full bg-[#F2F3FB] text-sm font-semibold text-slate-700 inline-flex items-center gap-2 shadow-sm transform-gpu transition hover:bg-[#E9ECF9] hover:-translate-y-[1px] hover:scale-[1.02]"
-          >
-            <FiEye /> Ver
-          </button>
+         
           <button
             type="button"
             onClick={() => setOpenHistorial(true)}
@@ -218,14 +217,14 @@ const SeccionConstanciasDesenglose: FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-2">
         {/* ===== LADO IZQUIERDO (categorías + selección personas) ===== */}
-        <aside className="rounded-2xl border border-slate-200 bg-white p-3">
-          <div className="-mt-3 -mx-3 rounded-t-2xl bg-gradient-to-r from-[#192D69] to-[#6581D6] px-4 py-2">
+        <aside className="rounded-2xl border border-slate-200 bg-white p-2.5">
+          <div className="-mt-3 -mx-3 rounded-t-2xl bg-gradient-to-r from-[#192D69] to-[#6581D6] px-3 py-1.5">
             <div className="flex items-center justify-between">
               <motion.div
                 ref={tabsContainerRef}
-                className="flex items-center gap-6 overflow-x-auto px-2 no-scrollbar"
+                className="flex items-center gap-4 overflow-x-auto px-2 no-scrollbar"
                 key={catId}
                 initial={{ x: navDir * 12, opacity: 0.98 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -241,7 +240,7 @@ const SeccionConstanciasDesenglose: FC = () => {
                       ref={(el) => {
                         tabRefs.current[c.id] = el;
                       }}
-                      className={`text-xs font-semibold px-2 py-1 ${
+                      className={`text-[11px] font-semibold px-2 py-0.5 ${
                         active
                           ? "text-white border-b-2 border-white/70"
                           : "text-white/80 hover:text-white"
@@ -262,7 +261,7 @@ const SeccionConstanciasDesenglose: FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-2 mt-2">
+          <div className="flex items-center justify-between mb-1 mt-1">
             <p className="text-xs font-semibold text-slate-700">
               {actual.titulo}
             </p>
@@ -279,7 +278,7 @@ const SeccionConstanciasDesenglose: FC = () => {
           <AnimatePresence initial={false} mode="wait">
             <motion.div
               key={`lista-${catId}`}
-              className="space-y-1"
+              className="space-y-0.5"
               initial={{ x: navDir * 80, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -navDir * 80, opacity: 0 }}
@@ -290,7 +289,7 @@ const SeccionConstanciasDesenglose: FC = () => {
                 return (
                   <label
                     key={p.id}
-                    className={`flex items-center gap-2 px-2 py-1 rounded-lg ${
+                    className={`flex items-center gap-2 px-2 py-0.5 rounded-lg ${
                       checked ? "bg-[#EFF0FF]" : "hover:bg-slate-50"
                     }`}
                   >
@@ -311,17 +310,37 @@ const SeccionConstanciasDesenglose: FC = () => {
         </aside>
 
         {/* ===== LADO DERECHO: PREVIEW CON PLANTILLA ===== */}
-        <main className="rounded-2xl border border-slate-200 bg-white p-4">
-  <div className="flex items-center justify-between mb-3">
-    <p className="text-sm font-semibold text-slate-900">Previsualización</p>
+        <main className="rounded-2xl border border-slate-280 bg-white p-4">
+          <div className="flex items-center justify-between mb-2">
+    <p className="text-xs font-semibold text-slate-900">Previsualización</p>
+  </div>
+  <div className="flex items-center justify-between mb-2">
+    
+    <button
+          type="button"
+          onClick={anterior}
+          className="h-7 w-7 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
+        >
+          ‹
+        </button>
+        <p className="text-[10px] text-slate-700 bg-white/70 px-2 py-[2px] rounded-full">
+          Constancia {total ? index + 1 : 0} de {total}
+        </p>
+        <button
+          type="button"
+          onClick={siguiente}
+          className="h-7 w-7 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
+        >
+          <FiChevronRight />
+        </button>
   </div>
 
   <div className="flex items-center justify-center">
     <div
       className="
         relative 
-        w-[720px] 
-        aspect-[210/297]       /* proporción carta vertical */
+        w-[640px] 
+        aspect-[3/4]
         bg-[#F9FAFF]
         rounded-xl 
         border border-slate-200 
@@ -370,28 +389,13 @@ const SeccionConstanciasDesenglose: FC = () => {
           </p>
         </div>
       )}
+      <div className="absolute left-4 right-4 bottom-2 flex items-center justify-between">
+        
+      </div>
     </div>
   </div>
 
-  <div className="mt-4 flex items-center justify-between">
-    <button
-      type="button"
-      onClick={anterior}
-      className="h-8 w-8 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
-    >
-      ‹
-    </button>
-    <p className="text-xs text-slate-600">
-      Constancia {total ? index + 1 : 0} de {total}
-    </p>
-    <button
-      type="button"
-      onClick={siguiente}
-      className="h-8 w-8 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-white inline-flex items-center justify-center"
-    >
-      <FiChevronRight />
-    </button>
-  </div>
+  <div className="mt-1" />
 </main>
 
       </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const logoTecnm = "/logoTECNM.png"; // 👈 tu logo
 
@@ -71,7 +72,22 @@ export const LayoutAdminGeneral: React.FC = () => {
 
       {/* AQUÍ VAN LAS PÁGINAS HIJAS */}
       <main className={isEvento ? "flex-1 min-h-0 overflow-y-auto px-0 py-0" : "flex-1 px-8 py-6"}>
-        <Outlet />
+        {isEvento ? (
+          <Outlet />
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={path}
+              initial={{ x: -40, opacity: 0, scale: 0.98 }}
+              animate={{ x: 0, opacity: 1, scale: 1 }}
+              exit={{ x: 40, opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.28, 1] }}
+              className="h-full"
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
+        )}
       </main>
     </div>
   );

@@ -66,7 +66,7 @@ const buildPdfSrc = (
   scope: "card" | "modal" = "card",
 ) => {
   const base = urlBase && urlBase.trim() !== "" ? urlBase : "/Hackatec2.pdf";
-  const zoom = scope === "modal" ? "60" : "20";
+  const zoom = "20";
   return `${base}?ctx=${scope}&v=${vCard}#page=1&zoom=${zoom}`;
 };
 

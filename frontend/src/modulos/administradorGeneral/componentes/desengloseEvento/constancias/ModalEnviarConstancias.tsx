@@ -5,27 +5,19 @@ interface Props {
   abierto: boolean;
   onCerrar: () => void;
   onAceptar: (config: {
-    canal: "Correo" | "WhatsApp";
     asunto: string;
     mensaje: string;
   }) => void;
 }
 
 const variables = ["Nombre", "Fecha", "Mensaje", "Equipo", "Concurso", "Añadir"];
-const templates: Record<"Correo" | "WhatsApp", { asunto?: string; mensaje: string }> = {
-  Correo: {
-    asunto: "Constancia de participación en {Concurso}",
-    mensaje:
-      "Hola {Nombre}, adjuntamos tu constancia por participación en {Concurso}. Fecha: {Fecha}.",
-  },
-  WhatsApp: {
-    mensaje:
-      "Hola {Nombre}, te compartimos tu constancia del evento {Concurso}. Fecha: {Fecha}.",
-  },
+const templates = {
+  asunto: "Constancia de participación en {Concurso}",
+  mensaje:
+    "Hola {Nombre}, adjuntamos tu constancia por participación en {Concurso}. Fecha: {Fecha}.",
 };
 
 const ModalEnviarConstancias: FC<Props> = ({ abierto, onCerrar, onAceptar }) => {
-  const [canal, setCanal] = useState<"Correo" | "WhatsApp">("Correo");
   const [asunto, setAsunto] = useState("Entrega de constancias");
   const [mensaje, setMensaje] = useState("Adjuntamos su constancia del evento.");
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -157,12 +149,10 @@ const ModalEnviarConstancias: FC<Props> = ({ abierto, onCerrar, onAceptar }) => 
     }
   };
 
-  const cambiarCanal = (c: "Correo" | "WhatsApp") => {
-    setCanal(c);
-    const t = templates[c];
-    if (t.asunto !== undefined) setAsunto(t.asunto);
-    setMensaje(t.mensaje);
-    renderToEditor(t.mensaje);
+  const usarPlantilla = () => {
+    setAsunto(templates.asunto);
+    setMensaje(templates.mensaje);
+    renderToEditor(templates.mensaje);
   };
 
   if (!abierto) return null;
@@ -178,22 +168,13 @@ const ModalEnviarConstancias: FC<Props> = ({ abierto, onCerrar, onAceptar }) => 
           <div className="flex items-center justify-between">
             <p className="text-white text-sm font-semibold">Enviar constancias</p>
             <div className="flex items-center gap-2">
-              <div className="inline-flex rounded-full bg-white/20 p-1">
-                {["Correo","WhatsApp"].map((c)=>{
-                  const active = canal===c;
-                  return (
-                    <button key={c} type="button" onClick={()=>cambiarCanal(c as "Correo" | "WhatsApp")} className={`px-4 py-1.5 rounded-full text-xs font-semibold ${active?"bg-white text-slate-800":"text-white"}`}>{c}</button>
-                  );
-                })}
-              </div>
-              <button type="button" onClick={()=> { const t = templates[canal]; if (t.asunto !== undefined) setAsunto(t.asunto); setMensaje(t.mensaje); renderToEditor(t.mensaje); }} className="px-4 py-1.5 rounded-full bg-white/20 text-white text-xs font-semibold">
+              <button type="button" onClick={usarPlantilla} className="px-4 py-1.5 rounded-full bg-white/20 text-white text-xs font-semibold">
                 Usar plantilla
               </button>
             </div>
           </div>
         </div>
         <div className="px-8 py-6 flex-1 overflow-auto">
-          {canal === "Correo" && (
             <div className="mt-4">
               <p className="text-xs font-semibold text-slate-700 mb-1">Configuración de correo</p>
               <div className="grid grid-cols-1 gap-3">
@@ -231,44 +212,9 @@ const ModalEnviarConstancias: FC<Props> = ({ abierto, onCerrar, onAceptar }) => 
                 </div>
               </div>
             </div>
-          )}
-          {canal === "WhatsApp" && (
-            <div className="mt-4">
-              <p className="text-xs font-semibold text-slate-700 mb-1">Mensaje</p>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {variables.map((v)=> (
-                  <button
-                    key={v}
-                    type="button"
-                    draggable
-                    onDragStart={(e)=> {
-                      const name = v === "Añadir" ? "Variable" : v;
-                      const token = `{${name}}`;
-                      e.dataTransfer.setData("text/plain", token);
-                      e.dataTransfer.setData("text", token);
-                      e.dataTransfer.effectAllowed = "copy";
-                      e.dataTransfer.setDragImage(e.currentTarget, 10, 10);
-                    }}
-                    onClick={()=> insertVariable(v === "Añadir" ? "Variable" : v)}
-                    className="px-3 py-1.5 rounded-full bg-[#F2F3FB] text-[11px] font-semibold text-slate-700 cursor-grab active:cursor-grabbing"
-                  >
-                    {v}
-                  </button>
-                ))}
-              </div>
-              <div
-                ref={editorRef}
-                contentEditable
-                onInput={()=> setMensaje(serialize())}
-                onDragOver={(e)=> { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }}
-                onDrop={handleDrop}
-                className="w-full min-h-[120px] rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF] focus:outline-none"
-              />
-            </div>
-          )}
           <div className="mt-6 flex justify-end gap-3">
             <button type="button" onClick={onCerrar} className="px-6 py-2.5 rounded-full bg-[#EEF0F7] text-sm font-semibold text-slate-700">Cancelar</button>
-            <button type="button" onClick={()=> onAceptar({ canal, asunto, mensaje })} className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-sm font-semibold text-white">Aceptar</button>
+            <button type="button" onClick={()=> onAceptar({ asunto, mensaje })} className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#5B4AE5] to-[#7B5CFF] text-sm font-semibold text-white">Aceptar</button>
           </div>
         </div>
       </div>

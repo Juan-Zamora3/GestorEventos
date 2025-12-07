@@ -17,7 +17,7 @@ interface RegistroEnvio {
   id: string;
   nombre: string;
   correo: string;
-  canal: "Correo" | "WhatsApp";
+  canal: "Correo";
   asunto?: string;
   fecha: string;
   estado: "Enviado" | "Fallido" | "Pendiente";
@@ -53,7 +53,8 @@ const mock: RegistroEnvio[] = [
     id: "3",
     nombre: "Valentina Martínez",
     correo: "vale@example.com",
-    canal: "WhatsApp",
+    canal: "Correo",
+    asunto: "Constancia",
     fecha: "2025-12-04 12:40",
     estado: "Pendiente",
   },
@@ -74,7 +75,7 @@ const HistorialEnvioCorreos: FC<Props> = ({ abierto, onCerrar, registros }) => {
   const data = registros && registros.length ? registros : mock;
 
   const [busqueda, setBusqueda] = useState("");
-  const [canal, setCanal] = useState<"Todos" | "Correo" | "WhatsApp">("Todos");
+  const [canal, setCanal] = useState<"Todos" | "Correo">("Todos");
   const [estado, setEstado] = useState<
     "Todos" | "Enviado" | "Fallido" | "Pendiente"
   >("Todos");
@@ -204,7 +205,7 @@ const HistorialEnvioCorreos: FC<Props> = ({ abierto, onCerrar, registros }) => {
 
               <Segment
                 value={canal}
-                options={["Todos", "Correo", "WhatsApp"]}
+                options={["Todos", "Correo"]}
                 onChange={(v) => setCanal(v)}
               />
               <Segment

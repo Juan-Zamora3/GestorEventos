@@ -1,5 +1,5 @@
 // Sección Ajuste del evento (Paso 4)
-// Configura características del evento: asistencia, confirmación, envío por WhatsApp/Correo,
+// Configura características del evento: asistencia, confirmación, envío por correo,
 // opciones de QR, costo de inscripción y tiempos de asistencia.
 import type { FC, Dispatch, SetStateAction } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -62,7 +62,7 @@ const SeccionAjusteEvento: FC = () => {
         <div className="mb-6">
           <p className="text-xs font-semibold text-slate-700 mb-2">Selección</p>
           <div className="mb-3 rounded-xl bg-[#F7F7FF] border border-[#E0DDFB] px-4 py-3">
-            <p className="text-[11px] text-slate-600">Activa las características que aplican a tu evento. WhatsApp ya está disponible como opción de envío.</p>
+            <p className="text-[11px] text-slate-600">Activa las características que aplican a tu evento.</p>
           </div>
           <div className="rounded-2xl border border-[#E0DDFB] bg-white p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -96,7 +96,6 @@ const SeccionAjusteEvento: FC = () => {
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-700">Envio de QR</label>
               <select value={ajuste.envioQR} onChange={(e) => setAjuste((prev) => ({ ...prev, envioQR: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-[#F9FAFF] focus:outline-none focus:ring-2 focus:ring-[#5B4AE5]/40 focus:border-[#5B4AE5]">
-                <option value="whatsapp">WhatsApp</option>
                 <option value="correo">Correo</option>
               </select>
             </div>
