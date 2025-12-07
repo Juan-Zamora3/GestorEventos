@@ -4,7 +4,7 @@ import type {
   CSSProperties,
   MouseEvent as ReactMouseEvent,
 } from "react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 interface PlantillaItem {
@@ -30,7 +30,7 @@ const buildPdfSrc = (pdfUrl?: string) => {
   const v = Date.now();
   const zoom = "60"; // ajusta 100–130 según qué tan grande quieras verlo
 
-  return `${base}?ctx=modal&v=${v}#page=1&zoom=${zoom}`;
+  return `${base}#page=1&zoom=${zoom}`;
 };
 
 const VerConstancia: FC<Props> = ({ open, item, onClose, onGuardar }) => {
