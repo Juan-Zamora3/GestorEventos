@@ -25,6 +25,7 @@ const PaginaDetalleEventoAdminAsistencias: React.FC = () => {
 
   // Animaciones tipo NavbarEvento
   const [mounted, setMounted] = useState(false);
+  const [exiting, setExiting] = useState(false);
   useEffect(() => {
     const t = window.setTimeout(() => setMounted(true), 50);
     return () => window.clearTimeout(t);
@@ -73,6 +74,12 @@ const PaginaDetalleEventoAdminAsistencias: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#EEF0F7] flex flex-col">
+      <motion.div
+        className="flex flex-col flex-1"
+        initial={{ y: 24, opacity: 0, scale: 0.98 }}
+        animate={exiting ? { y: 40, opacity: 0.02, scale: 0.98 } : mounted ? { y: 0, opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.28, 1] }}
+      >
       <header className="flex-shrink-0">
         <div className={`bg-gradient-to-r from-[#192D69] to-[#6581D6] text-white transform-gpu transition-all duration-700 ${mounted ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"}`}>
           <div className="px-6 sm:px-10 pt-6">
@@ -80,7 +87,12 @@ const PaginaDetalleEventoAdminAsistencias: React.FC = () => {
               <div className="flex items-center">
                 <button
                   type="button"
-                  onClick={() => navigate("/admin-asistencias")}
+                  onClick={() => {
+                    setExiting(true);
+                    window.setTimeout(() => {
+                      navigate("/admin-asistencias");
+                    }, 600);
+                  }}
                   className="h-9 w-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transform-gpu transition hover:scale-105"
                 >
                   ←
@@ -132,6 +144,7 @@ const PaginaDetalleEventoAdminAsistencias: React.FC = () => {
         {tab === "equipos" && <EquiposEventoPanel />}
         {tab === "asistencias" && <AsistenciasEventoPanel />}
       </main>
+      </motion.div>
     </div>
   );
 };

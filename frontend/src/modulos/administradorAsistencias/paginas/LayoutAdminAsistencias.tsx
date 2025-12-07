@@ -1,10 +1,13 @@
 // src/modulos/administradorAsistencias/paginas/LayoutAdminAsistencias.tsx
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const logoTecnm = "/logoTECNM.png";
 
 const LayoutAdminAsistencias: React.FC = () => {
+  const location = useLocation();
+  const path = location.pathname;
   return (
     <div className="min-h-screen w-full bg-[#EEF0F7] flex flex-col">
       {/* HEADER superior */}
@@ -36,7 +39,18 @@ const LayoutAdminAsistencias: React.FC = () => {
 
       {/* CONTENIDO */}
       <main className="flex-1">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={path}
+            initial={{ x: -40, opacity: 0, scale: 0.98 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{ x: 40, opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.28, 1] }}
+            className="h-full"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );
